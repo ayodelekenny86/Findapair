@@ -3,20 +3,18 @@ import NotificationDropdown from './NotificationDropdown'
 
 interface NavbarProps {
   onPostItem: (type: 'pair' | 'free') => void
-  activeSection: 'findapair' | 'freeitem'
-  setActiveSection: (s: 'findapair' | 'freeitem') => void
-  onOpenDashboard?: () => void
-  onOpenCommandPalette?: () => void
+  activeTab: 'findapair' | 'freeitem'
+  setActiveTab: (s: 'findapair' | 'freeitem') => void
 }
 
-export default function Navbar({ onPostItem, activeSection, setActiveSection, onOpenDashboard, onOpenCommandPalette }: NavbarProps) {
+export default function Navbar({ onPostItem, activeTab, setActiveTab }: NavbarProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50">
       <div className="px-3 sm:px-4 mt-3 sm:mt-4">
         <div
-          className="max-w-6xl mx-auto flex items-center justify-between px-4 sm:px-5 py-3 rounded-xl sm:rounded-2xl"
+          className="max-w-5xl mx-auto flex items-center justify-between px-4 sm:px-5 py-3 rounded-xl sm:rounded-2xl"
           style={{
             background: 'rgba(10, 10, 11, 0.85)',
             backdropFilter: 'blur(20px) saturate(180%)',
@@ -37,9 +35,9 @@ export default function Navbar({ onPostItem, activeSection, setActiveSection, on
           {/* Desktop Nav Links */}
           <div className="hidden md:flex items-center gap-1">
             <button
-              onClick={() => setActiveSection('findapair')}
+              onClick={() => setActiveTab('findapair')}
               className={`px-3.5 py-1.5 rounded-lg text-[13px] font-medium transition-all ${
-                activeSection === 'findapair'
+                activeTab === 'findapair'
                   ? 'text-white bg-white/5'
                   : 'text-zinc-400 hover:text-zinc-200'
               }`}
@@ -47,37 +45,25 @@ export default function Navbar({ onPostItem, activeSection, setActiveSection, on
               Find a Pair
             </button>
             <button
-              onClick={() => setActiveSection('freeitem')}
+              onClick={() => setActiveTab('freeitem')}
               className={`px-3.5 py-1.5 rounded-lg text-[13px] font-medium transition-all ${
-                activeSection === 'freeitem'
+                activeTab === 'freeitem'
                   ? 'text-white bg-white/5'
                   : 'text-zinc-400 hover:text-zinc-200'
               }`}
             >
               FreeItem
             </button>
-            <a href="#smart" className="px-3.5 py-1.5 rounded-lg text-[13px] font-medium text-zinc-400 hover:text-zinc-200 transition-all">
-              Features
-            </a>
-            <a href="#how" className="px-3.5 py-1.5 rounded-lg text-[13px] font-medium text-zinc-400 hover:text-zinc-200 transition-all">
-              How it works
-            </a>
           </div>
 
           {/* Right Side */}
           <div className="flex items-center gap-2">
-            <div className="hidden sm:block">
-              <NotificationDropdown />
-            </div>
             <button
-              onClick={() => onPostItem(activeSection === 'findapair' ? 'pair' : 'free')}
-              className="btn-primary !py-2 !px-3 sm:!px-4 !text-[12px] sm:!text-[13px]"
+              onClick={() => onPostItem(activeTab === 'findapair' ? 'pair' : 'free')}
+              className="px-4 py-2 bg-gradient-to-r from-cyan-500 to-cyan-400 text-black text-[12px] sm:text-[13px] font-semibold rounded-lg hover:from-cyan-400 hover:to-cyan-300 transition-all"
             >
-              <span className="hidden sm:inline">Post item</span>
-              <span className="sm:hidden">Post</span>
-              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" />
-              </svg>
+              <span className="hidden sm:inline">+ Post</span>
+              <span className="sm:hidden">+</span>
             </button>
             
             {/* Mobile Menu Button */}
@@ -101,7 +87,7 @@ export default function Navbar({ onPostItem, activeSection, setActiveSection, on
         {/* Mobile Menu */}
         {mobileMenuOpen && (
           <div
-            className="md:hidden max-w-6xl mx-auto mt-2 p-4 rounded-xl animate-slide-down"
+            className="md:hidden max-w-5xl mx-auto mt-2 p-4 rounded-xl animate-slide-down"
             style={{
               background: 'rgba(10, 10, 11, 0.95)',
               backdropFilter: 'blur(20px)',
@@ -110,9 +96,9 @@ export default function Navbar({ onPostItem, activeSection, setActiveSection, on
           >
             <div className="flex flex-col gap-2">
               <button
-                onClick={() => { setActiveSection('findapair'); setMobileMenuOpen(false); }}
+                onClick={() => { setActiveTab('findapair'); setMobileMenuOpen(false); }}
                 className={`w-full text-left px-4 py-3 rounded-lg text-[14px] font-medium transition-all ${
-                  activeSection === 'findapair'
+                  activeTab === 'findapair'
                     ? 'text-white bg-white/5'
                     : 'text-zinc-400 hover:text-zinc-200 hover:bg-white/5'
                 }`}
@@ -120,32 +106,15 @@ export default function Navbar({ onPostItem, activeSection, setActiveSection, on
                 🔍 Find a Pair
               </button>
               <button
-                onClick={() => { setActiveSection('freeitem'); setMobileMenuOpen(false); }}
+                onClick={() => { setActiveTab('freeitem'); setMobileMenuOpen(false); }}
                 className={`w-full text-left px-4 py-3 rounded-lg text-[14px] font-medium transition-all ${
-                  activeSection === 'freeitem'
+                  activeTab === 'freeitem'
                     ? 'text-white bg-white/5'
                     : 'text-zinc-400 hover:text-zinc-200 hover:bg-white/5'
                 }`}
               >
                 🎁 FreeItem Network
               </button>
-              <a
-                href="#smart"
-                onClick={() => setMobileMenuOpen(false)}
-                className="px-4 py-3 rounded-lg text-[14px] font-medium text-zinc-400 hover:text-zinc-200 hover:bg-white/5 transition-all"
-              >
-                ✨ Features
-              </a>
-              <a
-                href="#how"
-                onClick={() => setMobileMenuOpen(false)}
-                className="px-4 py-3 rounded-lg text-[14px] font-medium text-zinc-400 hover:text-zinc-200 hover:bg-white/5 transition-all"
-              >
-                📖 How it works
-              </a>
-              <div className="pt-2 mt-2 border-t border-white/5">
-                <NotificationDropdown />
-              </div>
             </div>
           </div>
         )}
