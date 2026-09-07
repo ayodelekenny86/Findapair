@@ -1,105 +1,42 @@
-import { useState, useEffect } from 'react'
-
-interface QuizQuestion {
-  question: string
-  options: string[]
-  icon: string
-}
-
-const questions: QuizQuestion[] = [
-  {
-    question: 'What did you lose?',
-    options: ['An earring', 'A shoe', 'A glove', 'Something else'],
-    icon: '🔍',
-  },
-  {
-    question: 'How valuable is it?',
-    options: ['Under $50', '$50-$200', '$200-$500', 'Over $500'],
-    icon: '💰',
-  },
-  {
-    question: 'How long ago did you lose it?',
-    options: ['Today', 'This week', 'This month', 'A while ago'],
-    icon: '⏰',
-  },
-  {
-    question: 'Do you want to find it or sell what you have?',
-    options: ['I need to find the mate', 'I have the mate to sell', 'I want to give it away free', 'Not sure yet'],
-    icon: '🎯',
-  },
-]
+import { useState } from 'react'
 
 export default function InteractiveQuiz() {
+  const [isOpen, setIsOpen] = useState(false)
   const [currentStep, setCurrentStep] = useState(0)
   const [answers, setAnswers] = useState<string[]>([])
   const [showResult, setShowResult] = useState(false)
-  const [isOpen, setIsOpen] = useState(false)
+
+  const questions = [
+    { question: 'What did you lose?', options: ['An earring', 'A shoe', 'A glove', 'Something else'], icon: '🔍' },
+    { question: 'How valuable is it?', options: ['Under $50', '$50-$200', '$200-$500', 'Over $500'], icon: '💰' },
+    { question: 'How long ago?', options: ['Today', 'This week', 'This month', 'A while ago'], icon: '⏰' },
+    { question: 'What do you want?', options: ['Find the mate', 'Sell what I have', 'Give it away free', 'Not sure yet'], icon: '🎯' },
+  ]
 
   const handleAnswer = (answer: string) => {
     const newAnswers = [...answers, answer]
     setAnswers(newAnswers)
-
-    if (currentStep < questions.length - 1) {
-      setCurrentStep(prev => prev + 1)
-    } else {
-      setShowResult(true)
-    }
+    if (currentStep < questions.length - 1) setCurrentStep(prev => prev + 1)
+    else setShowResult(true)
   }
 
-  const resetQuiz = () => {
-    setCurrentStep(0)
-    setAnswers([])
-    setShowResult(false)
-  }
+  const resetQuiz = () => { setCurrentStep(0); setAnswers([]); setShowResult(false); }
 
   const getResult = () => {
-    if (answers[3] === 'I need to find the mate') {
-      return {
-        title: 'Find a Pair is for you!',
-        description: 'Post what you lost and our AI will scan thousands of listings to find the mate. Average match time: 48 hours.',
-        cta: 'Browse Solo Items',
-        emoji: '🔗',
-        color: 'from-cyan-500 to-blue-500',
-      }
-    }
-    if (answers[3] === 'I have the mate to sell') {
-      return {
-        title: 'List Your Solo Item!',
-        description: `Based on your answers, we suggest pricing your item between $${answers[1] === 'Under $50' ? '15-30' : answers[1] === '$50-$200' ? '40-120' : '150-350'}. You'll save buyers 60-70% vs retail!`,
-        cta: 'Post Your Item',
-        emoji: '💎',
-        color: 'from-purple-500 to-pink-500',
-      }
-    }
-    if (answers[3] === 'I want to give it away free') {
-      return {
-        title: 'FreeItem Network!',
-        description: 'List your item for free on our network. Someone in your area will claim it within hours. Help reduce waste!',
-        cta: 'List Free Item',
-        emoji: '🎁',
-        color: 'from-green-500 to-emerald-500',
-      }
-    }
-    return {
-      title: 'Explore Both Options!',
-      description: 'Whether you want to find, sell, or give away — FindAPair has you covered. Browse listings or post your item.',
-      cta: 'Browse All',
-      emoji: '✨',
-      color: 'from-amber-500 to-orange-500',
-    }
+    if (answers[3] === 'Find the mate') return { title: 'Find a Pair is for you!', description: 'Post what you lost and our AI will scan thousands of listings.', cta: 'Browse Solo Items', emoji: '🔗' }
+    if (answers[3] === 'Sell what I have') return { title: 'List Your Solo Item!', description: 'Our Smart Price Calculator suggests fair pricing.', cta: 'Post Your Item', emoji: '💎' }
+    if (answers[3] === 'Give it away free') return { title: 'FreeItem Network!', description: 'List your item for free. Someone will claim it within hours.', cta: 'List Free Item', emoji: '🎁' }
+    return { title: 'Explore Both Options!', description: 'Whether you want to find, sell, or give away — we have you covered.', cta: 'Browse All', emoji: '✨' }
   }
 
   if (!isOpen) {
     return (
       <div className="fixed bottom-6 left-6 z-40">
-        <button
-          onClick={() => setIsOpen(true)}
-          className="glass rounded-2xl p-4 card-hover glow-sm group flex items-center gap-3"
-        >
-          <span className="text-2xl group-hover:animate-wiggle">🧠</span>
+        <button onClick={() => setIsOpen(true)} className="panel-elevated p-3 flex items-center gap-3 hover:border-cyan-500/20 transition-all">
+          <span className="text-xl">🧠</span>
           <div className="text-left">
-            <p className="text-sm font-semibold text-slate-100">Need Help?</p>
-            <p className="text-xs text-cyan-400">Take our quick quiz →</p>
+            <p className="text-[12px] font-semibold text-white">Need help?</p>
+            <p className="text-[10px] text-cyan-400">Take our quick quiz →</p>
           </div>
         </button>
       </div>
@@ -107,78 +44,52 @@ export default function InteractiveQuiz() {
   }
 
   return (
-    <div className="fixed bottom-6 left-6 z-40 w-[380px] max-w-[calc(100vw-3rem)]">
-      <div className="glass rounded-2xl overflow-hidden glow shadow-2xl animate-scale-in">
-        {/* Header */}
-        <div className="p-4 border-b border-cyan-500/10 flex items-center justify-between bg-slate-900/50">
+    <div className="fixed bottom-6 left-6 z-40 w-[340px] max-w-[calc(100vw-3rem)]">
+      <div className="panel-elevated overflow-hidden animate-scale-in">
+        <div className="p-4 flex items-center justify-between" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
           <div className="flex items-center gap-2">
-            <span className="text-xl">🧠</span>
+            <span className="text-lg">🧠</span>
             <div>
-              <p className="text-sm font-bold text-slate-100">Smart Assistant</p>
-              <p className="text-xs text-slate-500">Let's find the best option for you</p>
+              <p className="text-[13px] font-semibold text-white">Smart Assistant</p>
+              <p className="text-[10px] text-zinc-500">Let's find the best option</p>
             </div>
           </div>
-          <button
-            onClick={() => { setIsOpen(false); resetQuiz(); }}
-            className="w-7 h-7 flex items-center justify-center rounded-full hover:bg-slate-800 text-slate-500"
-          >
-            ✕
-          </button>
+          <button onClick={() => { setIsOpen(false); resetQuiz(); }} className="w-6 h-6 rounded-md flex items-center justify-center text-zinc-500 hover:text-zinc-300 hover:bg-white/5">✕</button>
         </div>
 
-        {/* Progress */}
         {!showResult && (
           <div className="px-4 pt-3">
             <div className="flex gap-1">
               {questions.map((_, i) => (
-                <div
-                  key={i}
-                  className={`h-1 flex-1 rounded-full transition-all ${
-                    i <= currentStep ? 'bg-cyan-500' : 'bg-slate-800'
-                  }`}
-                ></div>
+                <div key={i} className="h-0.5 flex-1 rounded-full" style={{ background: i <= currentStep ? '#06b6d4' : 'rgba(255,255,255,0.06)' }}></div>
               ))}
             </div>
-            <p className="text-xs text-slate-600 mt-1.5">Step {currentStep + 1} of {questions.length}</p>
+            <p className="text-[10px] text-zinc-600 mt-1.5">Step {currentStep + 1} of {questions.length}</p>
           </div>
         )}
 
-        {/* Content */}
         <div className="p-4">
           {!showResult ? (
             <div className="animate-fade-in" key={currentStep}>
               <div className="flex items-center gap-2 mb-3">
-                <span className="text-2xl">{questions[currentStep].icon}</span>
-                <h4 className="font-bold text-slate-100">{questions[currentStep].question}</h4>
+                <span className="text-xl">{questions[currentStep].icon}</span>
+                <h4 className="text-[14px] font-semibold text-white">{questions[currentStep].question}</h4>
               </div>
               <div className="space-y-2">
                 {questions[currentStep].options.map((option, i) => (
-                  <button
-                    key={i}
-                    onClick={() => handleAnswer(option)}
-                    className="w-full text-left px-4 py-3 rounded-xl glass-light hover:border-cyan-500/40 hover:bg-cyan-500/5 transition-all text-sm text-slate-300 hover:text-slate-100"
-                  >
+                  <button key={i} onClick={() => handleAnswer(option)} className="w-full text-left px-4 py-2.5 rounded-lg text-[13px] text-zinc-400 hover:text-white transition-all" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
                     {option}
                   </button>
                 ))}
               </div>
             </div>
           ) : (
-            <div className="animate-bounce-in text-center">
-              <div className={`w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br ${getResult().color} flex items-center justify-center`}>
-                <span className="text-3xl">{getResult().emoji}</span>
-              </div>
-              <h4 className="font-bold text-slate-100 text-lg mb-2">{getResult().title}</h4>
-              <p className="text-sm text-slate-400 mb-4">{getResult().description}</p>
-              <button className="w-full py-3 bg-gradient-to-r from-cyan-500 to-cyan-400 text-slate-900 rounded-xl font-semibold text-sm hover:from-cyan-400 hover:to-cyan-300 transition-all">
-                {getResult().cta} →
-              </button>
-              <button
-                onClick={resetQuiz}
-                className="mt-2 text-xs text-slate-500 hover:text-slate-300 transition-colors"
-              >
-                Take quiz again
-              </button>
+            <div className="animate-fade-in text-center">
+              <div className="text-3xl mb-3">{getResult().emoji}</div>
+              <h4 className="text-[15px] font-semibold text-white mb-2">{getResult().title}</h4>
+              <p className="text-[12px] text-zinc-500 mb-4">{getResult().description}</p>
+              <button className="btn-primary w-full !text-[13px]">{getResult().cta} →</button>
+              <button onClick={resetQuiz} className="mt-2 text-[11px] text-zinc-600 hover:text-zinc-400">Take quiz again</button>
             </div>
           )}
         </div>

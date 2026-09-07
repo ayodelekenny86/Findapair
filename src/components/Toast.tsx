@@ -2,69 +2,17 @@ import { useState, useEffect, useCallback } from 'react'
 
 export interface Toast {
   id: number
-  type: 'success' | 'info' | 'warning' | 'match'
+  type: 'success' | 'error' | 'info' | 'warning'
   title: string
   message: string
-  emoji: string
+  emoji?: string
 }
 
-interface ToastContainerProps {
-  toasts: Toast[]
-  removeToast: (id: number) => void
-}
-
-export function ToastContainer({ toasts, removeToast }: ToastContainerProps) {
-  return (
-    <div className="fixed top-20 right-4 z-50 space-y-3 max-w-sm">
-      {toasts.map((toast) => (
-        <ToastItem key={toast.id} toast={toast} onRemove={removeToast} />
-      ))}
-    </div>
-  )
-}
-
-function ToastItem({ toast, onRemove }: { toast: Toast; onRemove: (id: number) => void }) {
-  useEffect(() => {
-    const timer = setTimeout(() => onRemove(toast.id), 5000)
-    return () => clearTimeout(timer)
-  }, [toast.id, onRemove])
-
-  const bgColor = {
-    success: 'border-green-500/30 bg-green-500/10',
-    info: 'border-cyan-500/30 bg-cyan-500/10',
-    warning: 'border-amber-500/30 bg-amber-500/10',
-    match: 'border-purple-500/30 bg-purple-500/10',
-  }[toast.type]
-
-  return (
-    <div className={`glass rounded-xl p-4 border ${bgColor} animate-toast-in shadow-2xl`}>
-      <div className="flex items-start gap-3">
-        <span className="text-2xl">{toast.emoji}</span>
-        <div className="flex-1 min-w-0">
-          <p className="text-sm font-semibold text-slate-100">{toast.title}</p>
-          <p className="text-xs text-slate-400 mt-0.5">{toast.message}</p>
-        </div>
-        <button
-          onClick={() => onRemove(toast.id)}
-          className="text-slate-500 hover:text-slate-300 text-sm"
-        >
-          ✕
-        </button>
-      </div>
-      {/* Progress bar */}
-      <div className="mt-3 h-0.5 bg-slate-800 rounded-full overflow-hidden">
-        <div className="h-full bg-cyan-500/50 rounded-full animate-shrink" style={{ animation: 'shrink 5s linear forwards' }}></div>
-      </div>
-    </div>
-  )
-}
-
-// Hook for managing toasts
 export function useToasts() {
   const [toasts, setToasts] = useState<Toast[]>([])
 
   const addToast = useCallback((toast: Omit<Toast, 'id'>) => {
-    const id = Date.now() + Math.random()
+    const id = Date.now()
     setToasts(prev => [...prev, { ...toast, id }])
   }, [])
 
@@ -73,4 +21,57 @@ export function useToasts() {
   }, [])
 
   return { toasts, addToast, removeToast }
+}
+
+interface ToastContainerProps {
+  toasts: Toast[]
+  removeToast: (id: number) => void
+}
+
+export default function ToastContainer({ toasts, removeToast }: ToastContainerProps) {
+  return (
+    <div className="fixed top-20 right-4 z-[100] space-y-2 max-w-sm">
+      {toasts.map((toast) => (
+        <ToastItem key={toast.id} toast={toast} onClose={() => removeToast(toast.id)} />
+      ))}
+    </div>
+  )
+}
+
+function ToastItem({ toast, onClose }: { toast: Toast; onClose: () => void }) {
+  const [isVisible, setIsVisible] = useState(false)
+
+  useEffect(() => {
+    requestAnimationFrame(() => setIsVisible(true))
+    const timer = setTimeout(() => {
+      setIsVisible(false)
+      setTimeout(onClose, 300)
+    }, 4000)
+    return () => clearTimeout(timer)
+  }, [onClose])
+
+  const borderColor = {
+    success: 'rgba(16, 185, 129, 0.2)',
+    error: 'rgba(239, 68, 68, 0.2)',
+    info: 'rgba(6, 182, 212, 0.2)',
+    warning: 'rgba(245, 158, 11, 0.2)',
+  }[toast.type]
+
+  return (
+    <div
+      className="panel-elevated p-4 flex items-start gap-3 transition-all duration-300"
+      style={{
+        opacity: isVisible ? 1 : 0,
+        transform: isVisible ? 'translateX(0)' : 'translateX(20px)',
+        borderLeft: `3px solid ${borderColor}`,
+      }}
+    >
+      {toast.emoji && <span className="text-lg flex-shrink-0">{toast.emoji}</span>}
+      <div className="flex-1 min-w-0">
+        <p className="text-[13px] font-semibold text-white">{toast.title}</p>
+        <p className="text-[12px] text-zinc-500 mt-0.5">{toast.message}</p>
+      </div>
+      <button onClick={onClose} className="text-zinc-600 hover:text-zinc-400 text-sm flex-shrink-0">✕</button>
+    </div>
+  )
 }

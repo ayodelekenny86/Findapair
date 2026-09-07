@@ -9,16 +9,12 @@ interface Activity {
 }
 
 const activities: Activity[] = [
-  { id: 1, type: 'match', message: 'Sarah K. found the mate for her gold hoop earring!', time: '2 min ago', emoji: '💎' },
-  { id: 2, type: 'free', message: 'Tom B. gave away a kids bicycle in Austin', time: '5 min ago', emoji: '🚲' },
-  { id: 3, type: 'donation', message: 'Lisa M. donated 20+ cookbooks to local library', time: '12 min ago', emoji: '♻️' },
-  { id: 4, type: 'post', message: 'Mike R. posted a right Nike Air Max - Size 10', time: '18 min ago', emoji: '👟' },
-  { id: 5, type: 'match', message: 'Emma T. matched her pearl stud earring!', time: '25 min ago', emoji: '🦪' },
-  { id: 6, type: 'free', message: 'James P. listed a working microwave for free', time: '32 min ago', emoji: '📦' },
-  { id: 7, type: 'donation', message: 'Nina K. donated 3 winter coats to shelter', time: '45 min ago', emoji: '🧥' },
-  { id: 8, type: 'match', message: 'David P. found replacement Ray-Ban lens', time: '1 hour ago', emoji: '👓' },
-  { id: 9, type: 'free', message: 'Robert H. gave away garden tools in Nashville', time: '1.5 hours ago', emoji: '🌿' },
-  { id: 10, type: 'post', message: 'Rachel G. posted a diamond stud earring', time: '2 hours ago', emoji: '💍' },
+  { id: 1, type: 'match', message: 'Sarah K. found the mate for her gold hoop earring!', time: '2m ago', emoji: '💎' },
+  { id: 2, type: 'free', message: 'Tom B. gave away a kids bicycle in Austin', time: '5m ago', emoji: '🚲' },
+  { id: 3, type: 'donation', message: 'Lisa M. donated 20+ cookbooks to local library', time: '12m ago', emoji: '♻️' },
+  { id: 4, type: 'post', message: 'Mike R. posted a right Nike Air Max - Size 10', time: '18m ago', emoji: '👟' },
+  { id: 5, type: 'match', message: 'Emma T. matched her pearl stud earring!', time: '25m ago', emoji: '🦪' },
+  { id: 6, type: 'free', message: 'James P. listed a working microwave for free', time: '32m ago', emoji: '📦' },
 ]
 
 export default function ActivityFeed() {
@@ -29,155 +25,119 @@ export default function ActivityFeed() {
     if (!isLive) return
     const interval = setInterval(() => {
       setVisibleActivities(prev => {
-        const newActivity = {
-          ...activities[Math.floor(Math.random() * activities.length)],
-          id: Date.now(),
-          time: 'Just now',
-        }
+        const newActivity = { ...activities[Math.floor(Math.random() * activities.length)], id: Date.now(), time: 'Just now' }
         return [newActivity, ...prev.slice(0, 5)]
       })
     }, 8000)
     return () => clearInterval(interval)
   }, [isLive])
 
-  const getTypeColor = (type: string) => {
+  const getTypeBadge = (type: string) => {
     switch (type) {
-      case 'match': return 'border-cyan-500/30 bg-cyan-500/5'
-      case 'free': return 'border-green-500/30 bg-green-500/5'
-      case 'donation': return 'border-emerald-500/30 bg-emerald-500/5'
-      case 'post': return 'border-purple-500/30 bg-purple-500/5'
-      default: return 'border-slate-700 bg-slate-800/50'
-    }
-  }
-
-  const getTypeLabel = (type: string) => {
-    switch (type) {
-      case 'match': return 'Pair Found'
-      case 'free': return 'Free Item'
-      case 'donation': return 'Donation'
-      case 'post': return 'New Post'
-      default: return 'Activity'
+      case 'match': return { label: 'Pair found', class: 'badge-accent' }
+      case 'free': return { label: 'Free item', class: 'badge-success' }
+      case 'donation': return { label: 'Donation', class: 'badge-success' }
+      case 'post': return { label: 'New post', class: 'badge-warning' }
+      default: return { label: 'Activity', class: 'badge-accent' }
     }
   }
 
   return (
     <section className="py-16 md:py-20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-6xl mx-auto px-6">
         <div className="grid md:grid-cols-2 gap-8">
           {/* Activity Feed */}
           <div>
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-2xl font-bold text-slate-100">
-                Live Activity
-              </h3>
+              <div>
+                <span className="eyebrow mb-2 block">Community</span>
+                <h3 className="heading-md">Live activity</h3>
+              </div>
               <button
                 onClick={() => setIsLive(!isLive)}
-                className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
-                  isLive
-                    ? 'bg-green-500/20 text-green-400 border border-green-500/30'
-                    : 'bg-slate-800 text-slate-500 border border-slate-700'
+                className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-[12px] font-medium transition-all ${
+                  isLive ? 'text-emerald-400' : 'text-zinc-500'
                 }`}
+                style={{ background: isLive ? 'rgba(16, 185, 129, 0.1)' : 'rgba(255,255,255,0.03)', border: `1px solid ${isLive ? 'rgba(16, 185, 129, 0.2)' : 'rgba(255,255,255,0.06)'}` }}
               >
-                <span className={`w-2 h-2 rounded-full ${isLive ? 'bg-green-400 animate-pulse' : 'bg-slate-600'}`}></span>
+                <span className={`w-1.5 h-1.5 rounded-full ${isLive ? 'bg-emerald-400 animate-pulse-soft' : 'bg-zinc-600'}`}></span>
                 {isLive ? 'Live' : 'Paused'}
               </button>
             </div>
 
-            <div className="space-y-3">
-              {visibleActivities.map((activity, i) => (
-                <div
-                  key={activity.id}
-                  className={`glass-light rounded-xl p-4 border ${getTypeColor(activity.type)} ${
-                    i === 0 ? 'animate-slide-up' : ''
-                  }`}
-                >
-                  <div className="flex items-start gap-3">
-                    <span className="text-2xl">{activity.emoji}</span>
+            <div className="space-y-2">
+              {visibleActivities.map((activity, i) => {
+                const badge = getTypeBadge(activity.type)
+                return (
+                  <div
+                    key={activity.id}
+                    className="panel p-4 flex items-start gap-3"
+                    style={i === 0 ? { animation: 'fade-in 0.4s ease-out' } : {}}
+                  >
+                    <span className="text-xl flex-shrink-0">{activity.emoji}</span>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm text-slate-200 leading-relaxed">{activity.message}</p>
-                      <div className="flex items-center gap-3 mt-1.5">
-                        <span className="text-xs text-slate-500">{activity.time}</span>
-                        <span className={`text-xs px-2 py-0.5 rounded-full ${
-                          activity.type === 'match' ? 'bg-cyan-500/10 text-cyan-400' :
-                          activity.type === 'free' ? 'bg-green-500/10 text-green-400' :
-                          activity.type === 'donation' ? 'bg-emerald-500/10 text-emerald-400' :
-                          'bg-purple-500/10 text-purple-400'
-                        }`}>
-                          {getTypeLabel(activity.type)}
-                        </span>
+                      <p className="text-[13px] text-zinc-300 leading-relaxed">{activity.message}</p>
+                      <div className="flex items-center gap-2 mt-1.5">
+                        <span className="text-[11px] text-zinc-600">{activity.time}</span>
+                        <span className={`badge ${badge.class} !text-[10px] !py-0.5 !px-2`}>{badge.label}</span>
                       </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                )
+              })}
             </div>
           </div>
 
           {/* Impact Dashboard */}
           <div>
-            <h3 className="text-2xl font-bold text-slate-100 mb-6">
-              Environmental Impact
-            </h3>
+            <div className="mb-6">
+              <span className="eyebrow mb-2 block">Impact</span>
+              <h3 className="heading-md">Environmental impact</h3>
+            </div>
 
-            <div className="glass rounded-2xl p-6 mb-6">
+            <div className="panel p-6 mb-4">
               <div className="grid grid-cols-2 gap-4">
-                <div className="text-center p-4 rounded-xl bg-slate-800/50">
-                  <div className="text-3xl font-bold gradient-text">4.2</div>
-                  <div className="text-xs text-slate-500 mt-1">Tons Waste Prevented</div>
+                <div className="text-center p-4 rounded-lg" style={{ background: 'rgba(255,255,255,0.02)' }}>
+                  <div className="text-2xl font-bold gradient-text mb-1">4.2</div>
+                  <div className="text-[11px] text-zinc-500">Tons waste prevented</div>
                 </div>
-                <div className="text-center p-4 rounded-xl bg-slate-800/50">
-                  <div className="text-3xl font-bold gradient-text">12.8</div>
-                  <div className="text-xs text-slate-500 mt-1">Tons CO₂ Saved</div>
+                <div className="text-center p-4 rounded-lg" style={{ background: 'rgba(255,255,255,0.02)' }}>
+                  <div className="text-2xl font-bold gradient-text mb-1">12.8</div>
+                  <div className="text-[11px] text-zinc-500">Tons CO₂ saved</div>
                 </div>
-                <div className="text-center p-4 rounded-xl bg-slate-800/50">
-                  <div className="text-3xl font-bold gradient-text">3,291</div>
-                  <div className="text-xs text-slate-500 mt-1">Items Reunited</div>
+                <div className="text-center p-4 rounded-lg" style={{ background: 'rgba(255,255,255,0.02)' }}>
+                  <div className="text-2xl font-bold gradient-text mb-1">3,291</div>
+                  <div className="text-[11px] text-zinc-500">Items reunited</div>
                 </div>
-                <div className="text-center p-4 rounded-xl bg-slate-800/50">
-                  <div className="text-3xl font-bold gradient-text">8,562</div>
-                  <div className="text-xs text-slate-500 mt-1">Free Items Given</div>
+                <div className="text-center p-4 rounded-lg" style={{ background: 'rgba(255,255,255,0.02)' }}>
+                  <div className="text-2xl font-bold gradient-text mb-1">8,562</div>
+                  <div className="text-[11px] text-zinc-500">Free items given</div>
                 </div>
               </div>
             </div>
 
-            {/* Monthly Impact Chart (simulated) */}
-            <div className="glass rounded-2xl p-6">
-              <h4 className="text-sm font-semibold text-slate-300 mb-4">Monthly Waste Prevented (tons)</h4>
-              <div className="flex items-end gap-2 h-32">
+            {/* Chart */}
+            <div className="panel p-6">
+              <h4 className="text-[12px] font-semibold text-zinc-400 mb-4 uppercase tracking-wider">Monthly waste prevented (tons)</h4>
+              <div className="flex items-end gap-1.5 h-28">
                 {[0.8, 1.2, 1.5, 1.8, 2.1, 2.4, 2.8, 3.1, 3.5, 3.8, 4.0, 4.2].map((value, i) => (
                   <div key={i} className="flex-1 flex flex-col items-center gap-1">
                     <div
-                      className="w-full rounded-t-sm bg-gradient-to-t from-cyan-500 to-cyan-300 transition-all hover:from-cyan-400 hover:to-cyan-200"
-                      style={{ height: `${(value / 4.2) * 100}%` }}
+                      className="w-full rounded-sm transition-all hover:opacity-80 cursor-pointer"
+                      style={{ height: `${(value / 4.2) * 100}%`, background: 'linear-gradient(to top, #06b6d4, #22d3ee)' }}
                     ></div>
                     {i % 3 === 0 && (
-                      <span className="text-[9px] text-slate-600">
+                      <span className="text-[9px] text-zinc-600">
                         {['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D'][i]}
                       </span>
                     )}
                   </div>
                 ))}
               </div>
-              <div className="flex justify-between mt-3 text-xs text-slate-500">
+              <div className="flex justify-between mt-3 text-[11px] text-zinc-600">
                 <span>Jan 2026</span>
-                <span className="text-cyan-400 font-semibold">↑ 23% growth</span>
+                <span className="text-cyan-400 font-medium">↑ 23% growth</span>
                 <span>Dec 2026</span>
-              </div>
-            </div>
-
-            {/* Your Impact */}
-            <div className="glass-light rounded-2xl p-5 mt-4 border border-cyan-500/20">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-500 to-cyan-300 flex items-center justify-center">
-                  <span className="text-slate-900 font-bold text-sm">Y</span>
-                </div>
-                <div>
-                  <p className="text-sm text-slate-300 font-medium">Your Impact</p>
-                  <p className="text-xs text-slate-500">Join to track your personal environmental contribution</p>
-                </div>
-                <button className="ml-auto px-4 py-2 bg-cyan-500/20 text-cyan-400 rounded-lg text-xs font-semibold border border-cyan-500/30 hover:bg-cyan-500/30 transition-colors">
-                  Sign Up
-                </button>
               </div>
             </div>
           </div>

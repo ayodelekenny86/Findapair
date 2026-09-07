@@ -2,27 +2,28 @@ import AnimatedCounter from './AnimatedCounter'
 
 export default function StatsBar() {
   const stats = [
-    { value: 12847, label: 'Active Members', icon: '👥', trend: '+124 today', suffix: '' },
-    { value: 3291, label: 'Pairs Matched', icon: '🔗', trend: '+18 this week', suffix: '' },
-    { value: 8562, label: 'Free Items Given', icon: '🎁', trend: '+302 this week', suffix: '' },
-    { value: 4.2, label: 'Tons Waste Prevented', icon: '♻️', trend: '↑ 23% vs last month', suffix: 't', decimals: 1 },
+    { value: 12847, label: 'Active members', suffix: '', icon: '👥' },
+    { value: 3291, label: 'Pairs matched', suffix: '', icon: '🔗' },
+    { value: 8562, label: 'Free items given', suffix: '', icon: '🎁' },
+    { value: 4.2, label: 'Tons waste prevented', suffix: 't', decimals: 1, icon: '♻️' },
   ]
 
   return (
-    <section className="py-8 border-y border-cyan-500/10">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+    <section className="py-8">
+      <div className="max-w-6xl mx-auto px-6">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-px rounded-2xl overflow-hidden" style={{ background: 'rgba(255,255,255,0.06)' }}>
           {stats.map((stat, i) => (
             <div
               key={i}
-              className="glass-light rounded-xl p-4 text-center card-hover group"
+              className="text-center py-8 px-4"
+              style={{ background: 'rgba(17, 17, 19, 1)' }}
             >
-              <span className="text-2xl mb-2 block group-hover:animate-wiggle">{stat.icon}</span>
-              <div className="text-2xl font-bold gradient-text">
-                <AnimatedCounter end={stat.value} suffix={stat.suffix} decimals={stat.decimals || 0} />
+              <div className="text-3xl md:text-4xl font-bold tracking-tight text-white mb-1">
+                <AnimatedCounter end={stat.value} suffix={stat.suffix} decimals={(stat as any).decimals || 0} />
               </div>
-              <div className="text-sm text-slate-400 mt-1">{stat.label}</div>
-              <div className="text-xs text-cyan-500/70 mt-1">{stat.trend}</div>
+              <div className="text-[12px] text-zinc-500 font-medium tracking-wide uppercase">
+                {stat.label}
+              </div>
             </div>
           ))}
         </div>
