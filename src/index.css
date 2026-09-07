@@ -24,6 +24,61 @@ body {
   background: #09090b;
   color: #fafafa;
   overflow-x: hidden;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Light mode */
+body.light {
+  background: #ffffff;
+  color: #09090b;
+}
+
+body.light .bg-zinc-900 {
+  background-color: #f4f4f5 !important;
+}
+
+body.light .bg-zinc-800 {
+  background-color: #e4e4e7 !important;
+}
+
+body.light .bg-zinc-900\/50 {
+  background-color: rgba(244, 244, 245, 0.5) !important;
+}
+
+body.light .bg-zinc-900\/30 {
+  background-color: rgba(244, 244, 245, 0.3) !important;
+}
+
+body.light .text-white {
+  color: #09090b !important;
+}
+
+body.light .text-zinc-400 {
+  color: #52525b !important;
+}
+
+body.light .text-zinc-500 {
+  color: #71717a !important;
+}
+
+body.light .text-zinc-600 {
+  color: #a1a1aa !important;
+}
+
+body.light .border-zinc-800 {
+  border-color: #d4d4d8 !important;
+}
+
+body.light .border-zinc-700 {
+  border-color: #e4e4e7 !important;
+}
+
+body.light .hover\:bg-zinc-800:hover {
+  background-color: #e4e4e7 !important;
+}
+
+body.light .hover\:bg-zinc-700:hover {
+  background-color: #d4d4d8 !important;
 }
 
 /* Custom Scrollbar */

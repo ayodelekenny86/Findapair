@@ -1,15 +1,19 @@
 import { useState } from 'react'
 import NotificationDropdown from './NotificationDropdown'
 
+import ThemeToggle from './ThemeToggle'
+
 interface NavbarProps {
   onPostItem: (type: 'pair' | 'free') => void
   activeTab: 'findapair' | 'freeitem'
   setActiveTab: (s: 'findapair' | 'freeitem') => void
   onShowShortcuts?: () => void
   onShowCommandPalette?: () => void
+  theme: 'light' | 'dark'
+  onToggleTheme: () => void
 }
 
-export default function Navbar({ onPostItem, activeTab, setActiveTab, onShowShortcuts, onShowCommandPalette }: NavbarProps) {
+export default function Navbar({ onPostItem, activeTab, setActiveTab, onShowShortcuts, onShowCommandPalette, theme, onToggleTheme }: NavbarProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   return (
@@ -60,6 +64,7 @@ export default function Navbar({ onPostItem, activeTab, setActiveTab, onShowShor
 
           {/* Right Side */}
           <div className="flex items-center gap-2">
+            <ThemeToggle theme={theme} onToggle={onToggleTheme} />
             <button
               onClick={onShowCommandPalette}
               className="hidden sm:flex w-8 h-8 items-center justify-center rounded-lg text-zinc-400 hover:text-white hover:bg-white/5 transition-all"

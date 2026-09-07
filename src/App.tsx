@@ -11,6 +11,11 @@ import ActivityFeed from './components/ActivityFeed'
 import KeyboardShortcuts from './components/KeyboardShortcuts'
 import CommandPalette from './components/CommandPalette'
 import MobileNav from './components/MobileNav'
+import ThemeToggle from './components/ThemeToggle'
+import RecentlyViewed, { addToRecentlyViewed } from './components/RecentlyViewed'
+import TrendingItems from './components/TrendingItems'
+import AdvancedFilters, { FilterState } from './components/AdvancedFilters'
+import useTheme from './hooks/useTheme'
 import { initializeDatabase, itemsApi, userApi } from './lib/api'
 import { db } from './lib/db'
 import type { Item } from './lib/db'
@@ -24,7 +29,18 @@ function App() {
   const [selectedItem, setSelectedItem] = useState<Item | null>(null)
   const [showShortcuts, setShowShortcuts] = useState(false)
   const [showCommandPalette, setShowCommandPalette] = useState(false)
+  const [showAdvancedFilters, setShowAdvancedFilters] = useState(false)
+  const [filters, setFilters] = useState<FilterState>({
+    priceMin: 0,
+    priceMax: 1000,
+    condition: [],
+    location: '',
+    radius: 50,
+    verifiedOnly: false,
+    sortBy: 'match',
+  })
   const { toasts, addToast, removeToast } = useToasts()
+  const { theme, toggleTheme } = useTheme()
 
   useEffect(() => {
     initializeDatabase()
@@ -89,11 +105,14 @@ function App() {
       const response = await itemsApi.getById(item.id)
       if (response.success && response.data) {
         setSelectedItem(response.data)
+        addToRecentlyViewed(response.data)
       } else {
         setSelectedItem(item)
+        addToRecentlyViewed(item)
       }
     } catch {
       setSelectedItem(item)
+      addToRecentlyViewed(item)
     }
   }
 
@@ -150,6 +169,8 @@ function App() {
         onPostItem={handlePostItem}
         onShowShortcuts={() => setShowShortcuts(true)}
         onShowCommandPalette={() => setShowCommandPalette(true)}
+        theme={theme}
+        onToggleTheme={toggleTheme}
       />
       
       <main className="max-w-5xl mx-auto px-4 sm:px-6 pb-20 sm:pb-8">
@@ -160,6 +181,10 @@ function App() {
         />
         
         <QuickStats />
+        
+        <TrendingItems items={items} onSelectItem={handleSelectItem} />
+        
+        <RecentlyViewed onSelectItem={handleSelectItem} />
         
         {loading ? (
           <div className="py-20 text-center">
@@ -172,6 +197,7 @@ function App() {
             onPostItem={handlePostItem}
             onSelectItem={handleSelectItem}
             onToggleWishlist={handleToggleWishlist}
+            onOpenFilters={() => setShowAdvancedFilters(true)}
           />
         )}
         
@@ -215,6 +241,15 @@ function App() {
           onClose={() => setShowCommandPalette(false)}
           onNavigate={setActiveTab}
           onPostItem={handlePostItem}
+        />
+      )}
+
+      {showAdvancedFilters && (
+        <AdvancedFilters
+          isOpen={showAdvancedFilters}
+          onClose={() => setShowAdvancedFilters(false)}
+          onApply={setFilters}
+          currentFilters={filters}
         />
       )}
 
