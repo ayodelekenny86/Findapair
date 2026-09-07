@@ -9,11 +9,14 @@ interface NavbarProps {
   setActiveTab: (s: 'findapair' | 'freeitem') => void
   onShowShortcuts?: () => void
   onShowCommandPalette?: () => void
+  onShowProfile?: () => void
+  onShowNotifications?: () => void
+  onShowExport?: () => void
   theme: 'light' | 'dark'
   onToggleTheme: () => void
 }
 
-export default function Navbar({ onPostItem, activeTab, setActiveTab, onShowShortcuts, onShowCommandPalette, theme, onToggleTheme }: NavbarProps) {
+export default function Navbar({ onPostItem, activeTab, setActiveTab, onShowShortcuts, onShowCommandPalette, onShowProfile, onShowNotifications, onShowExport, theme, onToggleTheme }: NavbarProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   return (
@@ -73,6 +76,22 @@ export default function Navbar({ onPostItem, activeTab, setActiveTab, onShowShor
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
+            </button>
+            <button
+              onClick={onShowNotifications}
+              className="hidden sm:flex w-8 h-8 items-center justify-center rounded-lg text-zinc-400 hover:text-white hover:bg-white/5 transition-all relative"
+              title="Notifications"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+              </svg>
+            </button>
+            <button
+              onClick={onShowProfile}
+              className="hidden sm:flex w-8 h-8 items-center justify-center rounded-lg bg-gradient-to-br from-cyan-500 to-cyan-300 text-black text-xs font-bold"
+              title="Profile"
+            >
+              U
             </button>
             <button
               onClick={() => onPostItem(activeTab === 'findapair' ? 'pair' : 'free')}

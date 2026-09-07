@@ -15,6 +15,14 @@ import ThemeToggle from './components/ThemeToggle'
 import RecentlyViewed, { addToRecentlyViewed } from './components/RecentlyViewed'
 import TrendingItems from './components/TrendingItems'
 import AdvancedFilters, { FilterState } from './components/AdvancedFilters'
+import UserProfile from './components/UserProfile'
+import NotificationsCenter from './components/NotificationsCenter'
+import SavedSearches from './components/SavedSearches'
+import ItemComparison from './components/ItemComparison'
+import ShareModal from './components/ShareModal'
+import OfflineIndicator from './components/OfflineIndicator'
+import VoiceSearch from './components/VoiceSearch'
+import DataExport from './components/DataExport'
 import useTheme from './hooks/useTheme'
 import { initializeDatabase, itemsApi, userApi } from './lib/api'
 import { db } from './lib/db'
@@ -30,6 +38,12 @@ function App() {
   const [showShortcuts, setShowShortcuts] = useState(false)
   const [showCommandPalette, setShowCommandPalette] = useState(false)
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false)
+  const [showProfile, setShowProfile] = useState(false)
+  const [showNotifications, setShowNotifications] = useState(false)
+  const [showComparison, setShowComparison] = useState(false)
+  const [showShare, setShowShare] = useState(false)
+  const [showExport, setShowExport] = useState(false)
+  const [compareItems, setCompareItems] = useState<Item[]>([])
   const [filters, setFilters] = useState<FilterState>({
     priceMin: 0,
     priceMax: 1000,
@@ -169,6 +183,9 @@ function App() {
         onPostItem={handlePostItem}
         onShowShortcuts={() => setShowShortcuts(true)}
         onShowCommandPalette={() => setShowCommandPalette(true)}
+        onShowProfile={() => setShowProfile(true)}
+        onShowNotifications={() => setShowNotifications(true)}
+        onShowExport={() => setShowExport(true)}
         theme={theme}
         onToggleTheme={toggleTheme}
       />
@@ -212,6 +229,7 @@ function App() {
       />
 
       {/* Floating Elements */}
+      <OfflineIndicator />
       <FloatingChat />
 
       {/* Modals */}
@@ -251,6 +269,34 @@ function App() {
           onApply={setFilters}
           currentFilters={filters}
         />
+      )}
+
+      {showProfile && (
+        <UserProfile isOpen={showProfile} onClose={() => setShowProfile(false)} />
+      )}
+
+      {showNotifications && (
+        <NotificationsCenter isOpen={showNotifications} onClose={() => setShowNotifications(false)} />
+      )}
+
+      {showComparison && (
+        <ItemComparison
+          items={compareItems}
+          onRemove={(id) => setCompareItems(compareItems.filter(i => i.id !== id))}
+          onClose={() => setShowComparison(false)}
+        />
+      )}
+
+      {showShare && selectedItem && (
+        <ShareModal
+          isOpen={showShare}
+          onClose={() => setShowShare(false)}
+          item={selectedItem}
+        />
+      )}
+
+      {showExport && (
+        <DataExport isOpen={showExport} onClose={() => setShowExport(false)} />
       )}
 
       {/* Toast Notifications */}
