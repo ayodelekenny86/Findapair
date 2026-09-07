@@ -3,8 +3,14 @@ import Navbar from './components/Navbar'
 import Hero from './components/Hero'
 import Listings from './components/Listings'
 import PostItemModal from './components/PostItemModal'
+import ItemDetail from './components/ItemDetail'
 import ToastContainer, { useToasts } from './components/Toast'
 import FloatingChat from './components/FloatingChat'
+import QuickStats from './components/QuickStats'
+import ActivityFeed from './components/ActivityFeed'
+import KeyboardShortcuts from './components/KeyboardShortcuts'
+import CommandPalette from './components/CommandPalette'
+import MobileNav from './components/MobileNav'
 import { initializeDatabase, itemsApi, userApi } from './lib/api'
 import { db } from './lib/db'
 import type { Item } from './lib/db'
@@ -15,6 +21,9 @@ function App() {
   const [postType, setPostType] = useState<'pair' | 'free'>('pair')
   const [items, setItems] = useState<Item[]>([])
   const [loading, setLoading] = useState(true)
+  const [selectedItem, setSelectedItem] = useState<Item | null>(null)
+  const [showShortcuts, setShowShortcuts] = useState(false)
+  const [showCommandPalette, setShowCommandPalette] = useState(false)
   const { toasts, addToast, removeToast } = useToasts()
 
   useEffect(() => {
@@ -79,9 +88,13 @@ function App() {
     try {
       const response = await itemsApi.getById(item.id)
       if (response.success && response.data) {
-        // Could open detail modal here
+        setSelectedItem(response.data)
+      } else {
+        setSelectedItem(item)
       }
-    } catch {}
+    } catch {
+      setSelectedItem(item)
+    }
   }
 
   const handleToggleWishlist = async (itemId: string) => {
@@ -105,13 +118,21 @@ function App() {
 
       if (e.key === '/' || (e.metaKey && e.key === 'k')) {
         e.preventDefault()
-        // Could open search/command palette
+        setShowCommandPalette(true)
+      } else if (e.key === '?') {
+        e.preventDefault()
+        setShowShortcuts(true)
       } else if (e.key === '1') {
         setActiveTab('findapair')
       } else if (e.key === '2') {
         setActiveTab('freeitem')
       } else if (e.key === 'p' || e.key === 'P') {
         handlePostItem(activeTab === 'findapair' ? 'pair' : 'free')
+      } else if (e.key === 'Escape') {
+        setShowPostModal(false)
+        setSelectedItem(null)
+        setShowShortcuts(false)
+        setShowCommandPalette(false)
       }
     }
 
@@ -127,14 +148,18 @@ function App() {
         activeTab={activeTab}
         setActiveTab={setActiveTab}
         onPostItem={handlePostItem}
+        onShowShortcuts={() => setShowShortcuts(true)}
+        onShowCommandPalette={() => setShowCommandPalette(true)}
       />
       
-      <main className="max-w-5xl mx-auto px-4 sm:px-6">
+      <main className="max-w-5xl mx-auto px-4 sm:px-6 pb-20 sm:pb-8">
         <Hero 
           activeTab={activeTab}
           setActiveTab={setActiveTab}
           onPostItem={handlePostItem}
         />
+        
+        <QuickStats />
         
         {loading ? (
           <div className="py-20 text-center">
@@ -149,7 +174,16 @@ function App() {
             onToggleWishlist={handleToggleWishlist}
           />
         )}
+        
+        <ActivityFeed />
       </main>
+
+      {/* Mobile Bottom Navigation */}
+      <MobileNav
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        onPostItem={handlePostItem}
+      />
 
       {/* Floating Elements */}
       <FloatingChat />
@@ -160,6 +194,27 @@ function App() {
           type={postType} 
           onClose={() => setShowPostModal(false)}
           onSubmit={handlePostSuccess}
+        />
+      )}
+
+      {selectedItem && (
+        <ItemDetail
+          item={selectedItem}
+          onClose={() => setSelectedItem(null)}
+          onToggleWishlist={handleToggleWishlist}
+          isWishlisted={db.getCurrentUser().wishlist.includes(selectedItem.id)}
+        />
+      )}
+
+      {showShortcuts && (
+        <KeyboardShortcuts onClose={() => setShowShortcuts(false)} />
+      )}
+
+      {showCommandPalette && (
+        <CommandPalette
+          onClose={() => setShowCommandPalette(false)}
+          onNavigate={setActiveTab}
+          onPostItem={handlePostItem}
         />
       )}
 

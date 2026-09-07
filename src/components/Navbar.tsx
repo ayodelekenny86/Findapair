@@ -5,9 +5,11 @@ interface NavbarProps {
   onPostItem: (type: 'pair' | 'free') => void
   activeTab: 'findapair' | 'freeitem'
   setActiveTab: (s: 'findapair' | 'freeitem') => void
+  onShowShortcuts?: () => void
+  onShowCommandPalette?: () => void
 }
 
-export default function Navbar({ onPostItem, activeTab, setActiveTab }: NavbarProps) {
+export default function Navbar({ onPostItem, activeTab, setActiveTab, onShowShortcuts, onShowCommandPalette }: NavbarProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   return (
@@ -58,6 +60,15 @@ export default function Navbar({ onPostItem, activeTab, setActiveTab }: NavbarPr
 
           {/* Right Side */}
           <div className="flex items-center gap-2">
+            <button
+              onClick={onShowCommandPalette}
+              className="hidden sm:flex w-8 h-8 items-center justify-center rounded-lg text-zinc-400 hover:text-white hover:bg-white/5 transition-all"
+              title="Search (⌘K)"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </button>
             <button
               onClick={() => onPostItem(activeTab === 'findapair' ? 'pair' : 'free')}
               className="px-4 py-2 bg-gradient-to-r from-cyan-500 to-cyan-400 text-black text-[12px] sm:text-[13px] font-semibold rounded-lg hover:from-cyan-400 hover:to-cyan-300 transition-all"
