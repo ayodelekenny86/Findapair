@@ -67,6 +67,18 @@ export default function Navbar({ onPostItem, activeTab, setActiveTab, onShowShor
 
           {/* Right Side */}
           <div className="flex items-center gap-2">
+            <button
+              onClick={() => {
+                const event = new CustomEvent('openKeyboardTutorial')
+                window.dispatchEvent(event)
+              }}
+              className="hidden sm:flex w-8 h-8 items-center justify-center rounded-lg text-zinc-400 hover:text-white hover:bg-white/5 transition-all"
+              title="Keyboard Shortcuts (?)"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+              </svg>
+            </button>
             <ThemeToggle theme={theme} onToggle={onToggleTheme} />
             <button
               onClick={onShowCommandPalette}

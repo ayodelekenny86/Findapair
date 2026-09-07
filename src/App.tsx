@@ -42,6 +42,16 @@ import ItemNotes from './components/ItemNotes'
 import SavedFilterPresets from './components/SavedFilterPresets'
 import ItemStatusTracker from './components/ItemStatusTracker'
 import BatchImport from './components/BatchImport'
+import QRCodeGenerator from './components/QRCodeGenerator'
+import PrintView from './components/PrintView'
+import CustomThemes from './components/CustomThemes'
+import SearchHistory from './components/SearchHistory'
+import AchievementToast from './components/AchievementToast'
+import MultiLanguage from './components/MultiLanguage'
+import ItemEmbed from './components/ItemEmbed'
+import ItemVersionHistory from './components/ItemVersionHistory'
+import SmartNotificationGrouping from './components/SmartNotificationGrouping'
+import KeyboardTutorial from './components/KeyboardTutorial'
 import useTheme from './hooks/useTheme'
 import { initializeDatabase, itemsApi, userApi } from './lib/api'
 import { db } from './lib/db'
@@ -70,6 +80,12 @@ function App() {
   const [showPriceAlerts, setShowPriceAlerts] = useState(false)
   const [showTemplates, setShowTemplates] = useState(false)
   const [showBatchImport, setShowBatchImport] = useState(false)
+  const [showQRCode, setShowQRCode] = useState(false)
+  const [showPrintView, setShowPrintView] = useState(false)
+  const [showCustomThemes, setShowCustomThemes] = useState(false)
+  const [showMultiLanguage, setShowMultiLanguage] = useState(false)
+  const [showItemEmbed, setShowItemEmbed] = useState(false)
+  const [showKeyboardTutorial, setShowKeyboardTutorial] = useState(false)
   const [selectedItems, setSelectedItems] = useState<string[]>([])
   const [compareItems, setCompareItems] = useState<Item[]>([])
   const [filters, setFilters] = useState<FilterState>({
@@ -87,6 +103,13 @@ function App() {
   useEffect(() => {
     initializeDatabase()
     loadItems()
+  }, [])
+
+  // Listen for keyboard tutorial event
+  useEffect(() => {
+    const handleOpenTutorial = () => setShowKeyboardTutorial(true)
+    window.addEventListener('openKeyboardTutorial', handleOpenTutorial)
+    return () => window.removeEventListener('openKeyboardTutorial', handleOpenTutorial)
   }, [])
 
   const loadItems = async () => {
@@ -454,6 +477,54 @@ function App() {
           }}
         />
       )}
+
+      {showQRCode && selectedItem && (
+        <QRCodeGenerator
+          item={selectedItem}
+          isOpen={showQRCode}
+          onClose={() => setShowQRCode(false)}
+        />
+      )}
+
+      {showPrintView && selectedItem && (
+        <PrintView
+          item={selectedItem}
+          isOpen={showPrintView}
+          onClose={() => setShowPrintView(false)}
+        />
+      )}
+
+      {showCustomThemes && (
+        <CustomThemes
+          isOpen={showCustomThemes}
+          onClose={() => setShowCustomThemes(false)}
+        />
+      )}
+
+      {showMultiLanguage && (
+        <MultiLanguage
+          isOpen={showMultiLanguage}
+          onClose={() => setShowMultiLanguage(false)}
+        />
+      )}
+
+      {showItemEmbed && selectedItem && (
+        <ItemEmbed
+          item={selectedItem}
+          isOpen={showItemEmbed}
+          onClose={() => setShowItemEmbed(false)}
+        />
+      )}
+
+      {showKeyboardTutorial && (
+        <KeyboardTutorial
+          isOpen={showKeyboardTutorial}
+          onClose={() => setShowKeyboardTutorial(false)}
+        />
+      )}
+
+      {/* Always-visible components */}
+      <AchievementToast />
 
       {selectedItems.length > 0 && (
         <BulkActions
