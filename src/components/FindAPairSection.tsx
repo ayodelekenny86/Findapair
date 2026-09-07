@@ -4,6 +4,8 @@ import type { Toast } from './Toast'
 interface FindAPairSectionProps {
   onPostItem: (type: 'pair' | 'free') => void
   addToast?: (toast: Omit<Toast, 'id'>) => void
+  onSelectItem?: (item: any) => void
+  onOpenFilters?: () => void
 }
 
 interface PairItem {
@@ -43,7 +45,7 @@ const pairItems: PairItem[] = [
   { id: 8, title: 'Diamond Stud Earring - Left', description: '0.25ct diamond, white gold setting. Looking for the matching pair.', category: 'Earrings', emoji: '💍', location: 'Miami, FL', postedAgo: '4h ago', seller: 'Rachel G.', price: 200, originalPrice: 850, matchScore: 97, verified: true, condition: 'Excellent' },
 ]
 
-export default function FindAPairSection({ onPostItem, addToast }: FindAPairSectionProps) {
+export default function FindAPairSection({ onPostItem, addToast, onSelectItem, onOpenFilters }: FindAPairSectionProps) {
   const [selectedCategory, setSelectedCategory] = useState('All')
   const [searchQuery, setSearchQuery] = useState('')
   const [sortBy, setSortBy] = useState('match')

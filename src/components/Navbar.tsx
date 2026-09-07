@@ -4,9 +4,11 @@ interface NavbarProps {
   onPostItem: (type: 'pair' | 'free') => void
   activeSection: 'findapair' | 'freeitem'
   setActiveSection: (s: 'findapair' | 'freeitem') => void
+  onOpenDashboard?: () => void
+  onOpenCommandPalette?: () => void
 }
 
-export default function Navbar({ onPostItem, activeSection, setActiveSection }: NavbarProps) {
+export default function Navbar({ onPostItem, activeSection, setActiveSection, onOpenDashboard, onOpenCommandPalette }: NavbarProps) {
   return (
     <nav className="fixed top-0 left-0 right-0 z-50">
       <div className="mx-4 mt-4">
