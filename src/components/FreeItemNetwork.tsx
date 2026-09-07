@@ -1,7 +1,9 @@
 import { useState } from 'react'
+import type { Toast } from './Toast'
 
 interface FreeItemNetworkProps {
   onPostItem: (type: 'pair' | 'free') => void
+  addToast?: (toast: Omit<Toast, 'id'>) => void
 }
 
 interface FreeItem {
@@ -41,7 +43,7 @@ const freeItems: FreeItem[] = [
   { id: 8, title: 'Solid Wood Dining Table', description: 'Seats 4 comfortably. Some wear on top but structurally perfect. Chairs not included.', category: 'Furniture', emoji: '🪑', location: 'Philadelphia, PA', postedAgo: '8 hours ago', giver: 'Maria G.', trustScore: 94, donationOption: true, urgency: 'normal', saves: 15 },
 ]
 
-export default function FreeItemNetwork({ onPostItem }: FreeItemNetworkProps) {
+export default function FreeItemNetwork({ onPostItem, addToast }: FreeItemNetworkProps) {
   const [selectedCategory, setSelectedCategory] = useState('All')
   const [searchQuery, setSearchQuery] = useState('')
 

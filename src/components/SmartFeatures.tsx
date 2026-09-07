@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import MatchSimulator from './MatchSimulator'
 
 export default function SmartFeatures() {
   const [activeFeature, setActiveFeature] = useState(0)
@@ -134,6 +135,11 @@ export default function SmartFeatures() {
               <p className="text-sm text-slate-500 line-clamp-2">{feature.description}</p>
             </div>
           ))}
+        </div>
+
+        {/* Interactive Match Simulator */}
+        <div className="max-w-4xl mx-auto mt-12">
+          <MatchSimulator />
         </div>
       </div>
     </section>

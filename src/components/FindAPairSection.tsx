@@ -1,7 +1,9 @@
 import { useState } from 'react'
+import type { Toast } from './Toast'
 
 interface FindAPairSectionProps {
   onPostItem: (type: 'pair' | 'free') => void
+  addToast?: (toast: Omit<Toast, 'id'>) => void
 }
 
 interface PairItem {
@@ -163,11 +165,29 @@ const pairItems: PairItem[] = [
   },
 ]
 
-export default function FindAPairSection({ onPostItem }: FindAPairSectionProps) {
+export default function FindAPairSection({ onPostItem, addToast }: FindAPairSectionProps) {
   const [selectedCategory, setSelectedCategory] = useState('All')
   const [searchQuery, setSearchQuery] = useState('')
   const [sortBy, setSortBy] = useState('match')
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 500])
+  const [wishlist, setWishlist] = useState<number[]>([])
+  const [hoveredCard, setHoveredCard] = useState<number | null>(null)
+
+  const toggleWishlist = (id: number, title: string) => {
+    setWishlist(prev => {
+      if (prev.includes(id)) {
+        return prev.filter(i => i !== id)
+      } else {
+        addToast?.({
+          type: 'info',
+          title: 'Added to Wishlist',
+          message: `"${title}" saved to your wishlist`,
+          emoji: '❤️',
+        })
+        return [...prev, id]
+      }
+    })
+  }
 
   const filteredItems = pairItems.filter(item => {
     const matchesCategory = selectedCategory === 'All' || item.category === selectedCategory
@@ -283,6 +303,8 @@ export default function FindAPairSection({ onPostItem }: FindAPairSectionProps) 
             <div
               key={item.id}
               className="glass-light rounded-2xl overflow-hidden card-hover group"
+              onMouseEnter={() => setHoveredCard(item.id)}
+              onMouseLeave={() => setHoveredCard(null)}
             >
               {/* Image Area */}
               <div className="h-44 bg-gradient-to-br from-slate-800 to-slate-900 flex items-center justify-center relative border-b border-cyan-500/10">
@@ -294,9 +316,23 @@ export default function FindAPairSection({ onPostItem }: FindAPairSectionProps) 
                   <span className="text-xs font-bold text-cyan-400">{item.matchScore}% match</span>
                 </div>
 
-                {/* Verified Badge */}
-                {item.verified && (
-                  <div className="absolute top-3 right-3 px-2 py-1 rounded-full bg-green-500/20 border border-green-500/30">
+                {/* Wishlist Heart Button */}
+                <button
+                  onClick={(e) => { e.stopPropagation(); toggleWishlist(item.id, item.title); }}
+                  className={`absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center transition-all ${
+                    wishlist.includes(item.id)
+                      ? 'bg-red-500/20 border border-red-500/30 scale-110'
+                      : 'bg-slate-900/60 border border-slate-700/50 opacity-0 group-hover:opacity-100'
+                  }`}
+                >
+                  <span className={`text-sm ${wishlist.includes(item.id) ? 'animate-heartbeat' : ''}`}>
+                    {wishlist.includes(item.id) ? '❤️' : '🤍'}
+                  </span>
+                </button>
+
+                {/* Verified Badge (positioned differently when heart exists) */}
+                {item.verified && !wishlist.includes(item.id) && (
+                  <div className="absolute top-12 right-3 px-2 py-1 rounded-full bg-green-500/20 border border-green-500/30 opacity-0 group-hover:opacity-100 transition-opacity">
                     <span className="text-xs text-green-400">✓ Verified</span>
                   </div>
                 )}
