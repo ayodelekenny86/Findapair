@@ -1,66 +1,66 @@
-import { useState } from 'react'
-
 interface NavbarProps {
   onPostItem: (type: 'pair' | 'free') => void
+  activeSection: 'findapair' | 'freeitem'
+  setActiveSection: (s: 'findapair' | 'freeitem') => void
 }
 
-export default function Navbar({ onPostItem }: NavbarProps) {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-
+export default function Navbar({ onPostItem, activeSection, setActiveSection }: NavbarProps) {
   return (
-    <nav className="bg-white shadow-sm sticky top-0 z-50">
+    <nav className="fixed top-0 left-0 right-0 z-50 glass">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
+        <div className="flex items-center justify-between h-16">
+          {/* Logo */}
           <div className="flex items-center gap-2">
-            <div className="w-10 h-10 bg-gradient-to-br from-purple-600 to-pink-500 rounded-xl flex items-center justify-center">
-              <span className="text-white text-lg">🔗</span>
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-cyan-500 to-cyan-300 flex items-center justify-center glow-sm">
+              <span className="text-slate-900 font-bold text-sm">FP</span>
             </div>
-            <span className="text-xl font-bold text-gray-900">
-              finda<span className="text-purple-600">pair</span>.org
+            <span className="text-lg font-bold">
+              finda<span className="text-cyan-400">pair</span>
+              <span className="text-slate-500 text-sm">.org</span>
             </span>
           </div>
 
-          <div className="hidden md:flex items-center gap-6">
-            <a href="#findapair" className="text-gray-600 hover:text-purple-600 transition-colors font-medium">Find a Pair</a>
-            <a href="#freeitem" className="text-gray-600 hover:text-purple-600 transition-colors font-medium">FreeItem Network</a>
-            <a href="#how" className="text-gray-600 hover:text-purple-600 transition-colors font-medium">How It Works</a>
+          {/* Nav Links */}
+          <div className="hidden md:flex items-center gap-1">
             <button
-              onClick={() => onPostItem('pair')}
-              className="bg-purple-600 text-white px-5 py-2 rounded-full font-medium hover:bg-purple-700 transition-colors shadow-md hover:shadow-lg"
+              onClick={() => setActiveSection('findapair')}
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                activeSection === 'findapair'
+                  ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/30'
+                  : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
+              }`}
+            >
+              🔍 Find a Pair
+            </button>
+            <button
+              onClick={() => setActiveSection('freeitem')}
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                activeSection === 'freeitem'
+                  ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/30'
+                  : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
+              }`}
+            >
+              🎁 FreeItem Network
+            </button>
+            <a href="#smart" className="px-4 py-2 rounded-lg text-sm font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition-all">
+              ✨ Smart Features
+            </a>
+          </div>
+
+          {/* Actions */}
+          <div className="flex items-center gap-3">
+            <button className="hidden sm:flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition-all">
+              <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+              <span>Live</span>
+            </button>
+            <button
+              onClick={() => onPostItem(activeSection === 'findapair' ? 'pair' : 'free')}
+              className="px-4 py-2 bg-gradient-to-r from-cyan-500 to-cyan-400 text-slate-900 rounded-lg font-semibold text-sm hover:from-cyan-400 hover:to-cyan-300 transition-all glow-sm"
             >
               + Post Item
             </button>
           </div>
-
-          <button
-            className="md:hidden p-2 text-gray-600"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              {mobileMenuOpen ? (
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              ) : (
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              )}
-            </svg>
-          </button>
         </div>
-
-        {mobileMenuOpen && (
-          <div className="md:hidden pb-4 border-t">
-            <div className="flex flex-col gap-3 pt-4">
-              <a href="#findapair" className="text-gray-600 hover:text-purple-600 px-3 py-2 font-medium">Find a Pair</a>
-              <a href="#freeitem" className="text-gray-600 hover:text-purple-600 px-3 py-2 font-medium">FreeItem Network</a>
-              <a href="#how" className="text-gray-600 hover:text-purple-600 px-3 py-2 font-medium">How It Works</a>
-              <button
-                onClick={() => { onPostItem('pair'); setMobileMenuOpen(false) }}
-                className="bg-purple-600 text-white px-5 py-2 rounded-full font-medium hover:bg-purple-700 mx-3"
-              >
-                + Post Item
-              </button>
-            </div>
-          </div>
-        )}
       </div>
     </nav>
   )

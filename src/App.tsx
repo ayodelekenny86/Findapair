@@ -1,15 +1,17 @@
 import { useState } from 'react'
-import Hero from './components/Hero'
 import Navbar from './components/Navbar'
+import Hero from './components/Hero'
+import StatsBar from './components/StatsBar'
 import FindAPairSection from './components/FindAPairSection'
 import FreeItemNetwork from './components/FreeItemNetwork'
+import SmartFeatures from './components/SmartFeatures'
 import HowItWorks from './components/HowItWorks'
-import PostItemModal from './components/PostItemModal'
+import ActivityFeed from './components/ActivityFeed'
 import Footer from './components/Footer'
-import StatsBar from './components/StatsBar'
+import PostItemModal from './components/PostItemModal'
 
 function App() {
-  const [activeTab, setActiveTab] = useState<'findapair' | 'freeitem'>('findapair')
+  const [activeSection, setActiveSection] = useState<'findapair' | 'freeitem'>('findapair')
   const [showPostModal, setShowPostModal] = useState(false)
   const [postType, setPostType] = useState<'pair' | 'free'>('pair')
 
@@ -19,25 +21,24 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 font-sans">
-      <Navbar onPostItem={handlePostItem} />
-      <Hero activeTab={activeTab} setActiveTab={setActiveTab} />
+    <div className="min-h-screen bg-[#0f172a] text-slate-100 font-[Inter] bg-grid">
+      <Navbar onPostItem={handlePostItem} activeSection={activeSection} setActiveSection={setActiveSection} />
+      <Hero activeSection={activeSection} setActiveSection={setActiveSection} onPostItem={handlePostItem} />
       <StatsBar />
       
-      {activeTab === 'findapair' ? (
+      {activeSection === 'findapair' ? (
         <FindAPairSection onPostItem={handlePostItem} />
       ) : (
         <FreeItemNetwork onPostItem={handlePostItem} />
       )}
 
+      <SmartFeatures />
+      <ActivityFeed />
       <HowItWorks />
       <Footer />
 
       {showPostModal && (
-        <PostItemModal
-          type={postType}
-          onClose={() => setShowPostModal(false)}
-        />
+        <PostItemModal type={postType} onClose={() => setShowPostModal(false)} />
       )}
     </div>
   )

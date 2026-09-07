@@ -1,104 +1,112 @@
 export default function Footer() {
   return (
-    <footer className="bg-gray-900 text-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-10">
+    <footer className="border-t border-cyan-500/10 bg-slate-950">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+          {/* Brand */}
           <div className="md:col-span-1">
             <div className="flex items-center gap-2 mb-4">
-              <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center">
-                <span className="text-white text-lg">🔗</span>
+              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-cyan-500 to-cyan-300 flex items-center justify-center glow-sm">
+                <span className="text-slate-900 font-bold text-sm">FP</span>
               </div>
-              <span className="text-xl font-bold">
-                finda<span className="text-purple-400">pair</span>.org
+              <span className="text-lg font-bold">
+                finda<span className="text-cyan-400">pair</span>
+                <span className="text-slate-600 text-sm">.org</span>
               </span>
             </div>
-            <p className="text-gray-400 text-sm leading-relaxed">
+            <p className="text-slate-500 text-sm leading-relaxed mb-4">
               Find the mate of what you lost, or give away unwanted items for free. Reducing waste, one pair at a time.
             </p>
+            <div className="flex gap-3">
+              {['𝕏', 'f', 'in', '📷'].map((icon, i) => (
+                <a
+                  key={i}
+                  href="#"
+                  className="w-8 h-8 glass-light rounded-lg flex items-center justify-center text-slate-500 hover:text-cyan-400 hover:border-cyan-500/30 transition-all text-sm"
+                >
+                  {icon}
+                </a>
+              ))}
+            </div>
           </div>
 
+          {/* Links */}
           <div>
-            <h4 className="font-bold text-white mb-4">Find a Pair</h4>
-            <ul className="space-y-2 text-sm text-gray-400">
-              <li><a href="#" className="hover:text-purple-400 transition-colors">Browse Solo Items</a></li>
-              <li><a href="#" className="hover:text-purple-400 transition-colors">Post Your Item</a></li>
-              <li><a href="#" className="hover:text-purple-400 transition-colors">Earrings</a></li>
-              <li><a href="#" className="hover:text-purple-400 transition-colors">Shoes</a></li>
-              <li><a href="#" className="hover:text-purple-400 transition-colors">Gloves & Accessories</a></li>
+            <h4 className="font-bold text-slate-200 mb-4 text-sm uppercase tracking-wider">Find a Pair</h4>
+            <ul className="space-y-2.5">
+              {['Browse Solo Items', 'Post Your Item', 'Earrings', 'Shoes', 'Gloves & Accessories', 'Watches'].map((link) => (
+                <li key={link}>
+                  <a href="#" className="text-sm text-slate-500 hover:text-cyan-400 transition-colors">{link}</a>
+                </li>
+              ))}
             </ul>
           </div>
 
           <div>
-            <h4 className="font-bold text-white mb-4">FreeItem Network</h4>
-            <ul className="space-y-2 text-sm text-gray-400">
-              <li><a href="#" className="hover:text-green-400 transition-colors">Browse Free Items</a></li>
-              <li><a href="#" className="hover:text-green-400 transition-colors">Give Something Free</a></li>
-              <li><a href="#" className="hover:text-green-400 transition-colors">Donate to Charity</a></li>
-              <li><a href="#" className="hover:text-green-400 transition-colors">Community Rules</a></li>
-              <li><a href="#" className="hover:text-green-400 transition-colors">Success Stories</a></li>
+            <h4 className="font-bold text-slate-200 mb-4 text-sm uppercase tracking-wider">FreeItem Network</h4>
+            <ul className="space-y-2.5">
+              {['Browse Free Items', 'Give Something Free', 'Donate to Charity', 'Community Rules', 'Success Stories', 'Trust Scores'].map((link) => (
+                <li key={link}>
+                  <a href="#" className="text-sm text-slate-500 hover:text-cyan-400 transition-colors">{link}</a>
+                </li>
+              ))}
             </ul>
           </div>
 
           <div>
-            <h4 className="font-bold text-white mb-4">About</h4>
-            <ul className="space-y-2 text-sm text-gray-400">
-              <li><a href="#" className="hover:text-white transition-colors">Our Mission</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">How It Works</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Waste Reduction Impact</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Contact Us</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Privacy Policy</a></li>
+            <h4 className="font-bold text-slate-200 mb-4 text-sm uppercase tracking-wider">Company</h4>
+            <ul className="space-y-2.5">
+              {['Our Mission', 'How It Works', 'Smart Features', 'Impact Report', 'Contact Us', 'Privacy Policy', 'Terms of Service'].map((link) => (
+                <li key={link}>
+                  <a href="#" className="text-sm text-slate-500 hover:text-cyan-400 transition-colors">{link}</a>
+                </li>
+              ))}
             </ul>
           </div>
         </div>
 
         {/* Environmental Impact */}
-        <div className="border-t border-gray-800 pt-8 mb-8">
-          <div className="bg-gradient-to-r from-green-900/30 to-emerald-900/30 rounded-2xl p-6 border border-green-800/30">
-            <div className="flex flex-col md:flex-row items-center gap-4 text-center md:text-left">
-              <span className="text-4xl">🌍</span>
-              <div className="flex-1">
-                <h4 className="font-bold text-green-400 text-lg">Our Environmental Impact</h4>
-                <p className="text-gray-400 text-sm">
-                  By connecting solo items with their mates and giving away unwanted goods, our community has prevented 
-                  <strong className="text-green-400"> 4.2 tons </strong> of waste from entering landfills this year. 
-                  Every item reused is a step toward a more sustainable world.
-                </p>
+        <div className="glass rounded-2xl p-6 mb-10 border border-emerald-500/20">
+          <div className="flex flex-col md:flex-row items-center gap-6">
+            <div className="text-4xl">🌍</div>
+            <div className="flex-1 text-center md:text-left">
+              <h4 className="font-bold text-emerald-400 text-lg mb-1">Our Environmental Impact</h4>
+              <p className="text-slate-400 text-sm">
+                By connecting solo items with their mates and giving away unwanted goods, our community has prevented{' '}
+                <strong className="text-emerald-400">4.2 tons</strong> of waste from entering landfills and saved{' '}
+                <strong className="text-emerald-400">12.8 tons of CO₂</strong> this year.
+              </p>
+            </div>
+            <div className="flex gap-6">
+              <div className="text-center">
+                <div className="text-xl font-bold gradient-text">4.2t</div>
+                <div className="text-[10px] text-slate-600 uppercase tracking-wider">Waste Saved</div>
               </div>
-              <div className="flex gap-4">
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-green-400">4.2t</div>
-                  <div className="text-xs text-gray-500">Waste Saved</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-green-400">3.2k</div>
-                  <div className="text-xs text-gray-500">Pairs Matched</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-green-400">8.5k</div>
-                  <div className="text-xs text-gray-500">Items Given</div>
-                </div>
+              <div className="text-center">
+                <div className="text-xl font-bold gradient-text">12.8t</div>
+                <div className="text-[10px] text-slate-600 uppercase tracking-wider">CO₂ Saved</div>
+              </div>
+              <div className="text-center">
+                <div className="text-xl font-bold gradient-text">11.8k</div>
+                <div className="text-[10px] text-slate-600 uppercase tracking-wider">Items Reused</div>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="border-t border-gray-800 pt-6 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-sm text-gray-500">
-            © 2026 FindAPair.org — All rights reserved. Promoting waste reduction since day one.
+        {/* Bottom */}
+        <div className="border-t border-slate-800 pt-6 flex flex-col md:flex-row justify-between items-center gap-4">
+          <p className="text-xs text-slate-600">
+            © 2026 FindAPair.org — All rights reserved. Promoting waste reduction and sustainable living.
           </p>
-          <div className="flex gap-4">
-            <a href="#" className="w-8 h-8 bg-gray-800 rounded-full flex items-center justify-center text-gray-400 hover:text-white hover:bg-gray-700 transition-colors">
-              <span className="text-sm">𝕏</span>
-            </a>
-            <a href="#" className="w-8 h-8 bg-gray-800 rounded-full flex items-center justify-center text-gray-400 hover:text-white hover:bg-gray-700 transition-colors">
-              <span className="text-sm">f</span>
-            </a>
-            <a href="#" className="w-8 h-8 bg-gray-800 rounded-full flex items-center justify-center text-gray-400 hover:text-white hover:bg-gray-700 transition-colors">
-              <span className="text-sm">in</span>
-            </a>
-            <a href="#" className="w-8 h-8 bg-gray-800 rounded-full flex items-center justify-center text-gray-400 hover:text-white hover:bg-gray-700 transition-colors">
-              <span className="text-sm">📷</span>
-            </a>
+          <div className="flex items-center gap-4 text-xs text-slate-600">
+            <a href="#" className="hover:text-slate-400 transition-colors">Privacy</a>
+            <a href="#" className="hover:text-slate-400 transition-colors">Terms</a>
+            <a href="#" className="hover:text-slate-400 transition-colors">Cookies</a>
+            <span className="flex items-center gap-1">
+              <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span>
+              All systems operational
+            </span>
           </div>
         </div>
       </div>

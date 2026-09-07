@@ -1,110 +1,85 @@
 export default function HowItWorks() {
+  const steps = [
+    {
+      step: '01',
+      title: 'Post Your Item',
+      description: 'Snap a photo, describe what you have or lost. Our AI categorizes and tags it automatically.',
+      icon: '📸',
+      color: 'from-cyan-500/20 to-blue-500/20',
+    },
+    {
+      step: '02',
+      title: 'AI Finds Matches',
+      description: 'Our smart engine scans thousands of listings to find potential mates. You get notified instantly.',
+      icon: '🧠',
+      color: 'from-purple-500/20 to-pink-500/20',
+    },
+    {
+      step: '03',
+      title: 'Connect & Exchange',
+      description: 'Chat with your match, agree on price (for pairs) or arrange pickup (for free items). Simple.',
+      icon: '🤝',
+      color: 'from-green-500/20 to-emerald-500/20',
+    },
+    {
+      step: '04',
+      title: 'Make an Impact',
+      description: 'Every match prevents waste. Track your environmental contribution in real-time.',
+      icon: '🌍',
+      color: 'from-amber-500/20 to-orange-500/20',
+    },
+  ]
+
   return (
-    <section id="how" className="py-16 md:py-20 bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-14">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-            How It Works
+    <section id="how" className="py-16 md:py-24 relative">
+      <div className="absolute inset-0 bg-dots opacity-50"></div>
+      
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">
+            How It <span className="gradient-text">Works</span>
           </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Two platforms, one mission: reduce waste and help people find what they need.
+          <p className="text-slate-400 max-w-xl mx-auto">
+            From posting to pairing in minutes. Our streamlined process makes it effortless.
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-10 mb-16">
-          {/* Find a Pair */}
-          <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-3xl p-8 border border-purple-100">
-            <div className="text-4xl mb-4">🔗</div>
-            <h3 className="text-2xl font-bold text-gray-900 mb-4">Find a Pair</h3>
-            <p className="text-gray-600 mb-6">
-              Lost one of a pair? Someone out there has the mate. It's cheaper than buying new, and saves something from the landfill.
-            </p>
-            <div className="space-y-4">
-              <div className="flex items-start gap-3">
-                <span className="w-8 h-8 bg-purple-600 text-white rounded-full flex items-center justify-center text-sm font-bold shrink-0">1</span>
-                <div>
-                  <p className="font-semibold text-gray-900">Post Your Solo Item</p>
-                  <p className="text-sm text-gray-600">Describe what you have and what you're looking for. Include photos, size, brand, and condition.</p>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {steps.map((step, i) => (
+            <div key={i} className="relative group">
+              {/* Connector line */}
+              {i < steps.length - 1 && (
+                <div className="hidden lg:block absolute top-12 left-[60%] w-[80%] h-px bg-gradient-to-r from-cyan-500/30 to-transparent"></div>
+              )}
+              
+              <div className="glass-light rounded-2xl p-6 card-hover h-full">
+                <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${step.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
+                  <span className="text-2xl">{step.icon}</span>
                 </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <span className="w-8 h-8 bg-purple-600 text-white rounded-full flex items-center justify-center text-sm font-bold shrink-0">2</span>
-                <div>
-                  <p className="font-semibold text-gray-900">Get Matched</p>
-                  <p className="text-sm text-gray-600">Our community gets notified. Someone who has the other half or is looking for exactly yours will reach out.</p>
-                </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <span className="w-8 h-8 bg-purple-600 text-white rounded-full flex items-center justify-center text-sm font-bold shrink-0">3</span>
-                <div>
-                  <p className="font-semibold text-gray-900">Connect & Complete</p>
-                  <p className="text-sm text-gray-600">Arrange exchange. The price is always less than buying a new pair — and you save something from the trash.</p>
-                </div>
+                <div className="text-xs text-cyan-500 font-bold mb-2">STEP {step.step}</div>
+                <h3 className="text-lg font-bold text-slate-100 mb-2">{step.title}</h3>
+                <p className="text-sm text-slate-400 leading-relaxed">{step.description}</p>
               </div>
             </div>
-            <div className="mt-6 p-4 bg-white rounded-xl border border-purple-100">
-              <p className="text-sm text-gray-600 italic">
-                💡 "At the very least, someone else would be happy to pay for your solo gold earring — maybe to make another item entirely out of it."
-              </p>
-            </div>
-          </div>
-
-          {/* FreeItem Network */}
-          <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-3xl p-8 border border-green-100">
-            <div className="text-4xl mb-4">♻️</div>
-            <h3 className="text-2xl font-bold text-gray-900 mb-4">The FreeItem Network</h3>
-            <p className="text-gray-600 mb-6">
-              One person's trash is another person's treasure. Everything posted is 100% free. No money ever changes hands.
-            </p>
-            <div className="space-y-4">
-              <div className="flex items-start gap-3">
-                <span className="w-8 h-8 bg-green-600 text-white rounded-full flex items-center justify-center text-sm font-bold shrink-0">1</span>
-                <div>
-                  <p className="font-semibold text-gray-900">List Your Unwanted Items</p>
-                  <p className="text-sm text-gray-600">Snap a photo, write a description. Everything must be free, legal, and appropriate for all ages.</p>
-                </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <span className="w-8 h-8 bg-green-600 text-white rounded-full flex items-center justify-center text-sm font-bold shrink-0">2</span>
-                <div>
-                  <p className="font-semibold text-gray-900">Someone Claims It</p>
-                  <p className="text-sm text-gray-600">Your online noticeboard keeps people visiting every minute. Someone nearby will claim your item.</p>
-                </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <span className="w-8 h-8 bg-green-600 text-white rounded-full flex items-center justify-center text-sm font-bold shrink-0">3</span>
-                <div>
-                  <p className="font-semibold text-gray-900">Or Donate to Non-Profit</p>
-                  <p className="text-sm text-gray-600">Can't find a taker? Tag it for donation and we'll connect you with a local charity. Promote waste reduction!</p>
-                </div>
-              </div>
-            </div>
-            <div className="mt-6 p-4 bg-white rounded-xl border border-green-100">
-              <p className="text-sm text-gray-600 italic">
-                🌍 "A feelgood factor comes from giving unwanted stuff to a non-profit — promoting waste reduction and reducing landfills."
-              </p>
-            </div>
-          </div>
+          ))}
         </div>
 
-        {/* The Rules */}
-        <div className="bg-gray-50 rounded-3xl p-8 md:p-12">
-          <h3 className="text-2xl font-bold text-gray-900 mb-6 text-center">The One Rule of FreeItem</h3>
-          <div className="grid md:grid-cols-3 gap-6">
-            <div className="text-center p-6 bg-white rounded-2xl shadow-sm">
-              <span className="text-4xl mb-3 block">💚</span>
-              <h4 className="font-bold text-gray-900 text-lg mb-2">Always Free</h4>
-              <p className="text-gray-600 text-sm">No money changes hands. Everything listed is genuinely free to claim.</p>
-            </div>
-            <div className="text-center p-6 bg-white rounded-2xl shadow-sm">
-              <span className="text-4xl mb-3 block">⚖️</span>
-              <h4 className="font-bold text-gray-900 text-lg mb-2">Always Legal</h4>
-              <p className="text-gray-600 text-sm">All items must be legal to give away and own. No stolen or prohibited goods.</p>
-            </div>
-            <div className="text-center p-6 bg-white rounded-2xl shadow-sm">
-              <span className="text-4xl mb-3 block">👨‍👩‍👧‍👦</span>
-              <h4 className="font-bold text-gray-900 text-lg mb-2">Family Friendly</h4>
-              <p className="text-gray-600 text-sm">Everything posted must be appropriate for all ages. Keep it clean and kind.</p>
+        {/* CTA */}
+        <div className="mt-16 text-center">
+          <div className="glass rounded-3xl p-8 md:p-12 max-w-3xl mx-auto">
+            <h3 className="text-2xl md:text-3xl font-bold mb-4">
+              Ready to Find Your <span className="gradient-text">Pair</span>?
+            </h3>
+            <p className="text-slate-400 mb-8 max-w-xl mx-auto">
+              Join 12,847 members who are already finding mates for their lost items and giving away unwanted stuff for free.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <button className="px-8 py-4 bg-gradient-to-r from-cyan-500 to-cyan-400 text-slate-900 rounded-xl font-bold text-lg hover:from-cyan-400 hover:to-cyan-300 transition-all glow">
+                Get Started Free →
+              </button>
+              <button className="px-8 py-4 glass rounded-xl font-bold text-lg text-slate-200 hover:bg-slate-800/70 transition-all">
+                Learn More
+              </button>
             </div>
           </div>
         </div>
