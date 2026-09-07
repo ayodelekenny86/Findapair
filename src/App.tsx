@@ -52,6 +52,9 @@ import ItemEmbed from './components/ItemEmbed'
 import ItemVersionHistory from './components/ItemVersionHistory'
 import SmartNotificationGrouping from './components/SmartNotificationGrouping'
 import KeyboardTutorial from './components/KeyboardTutorial'
+import AdminDashboard from './components/AdminDashboard'
+import UserAccount from './components/UserAccount'
+import LoginModal from './components/LoginModal'
 import useTheme from './hooks/useTheme'
 import { initializeDatabase, itemsApi, userApi } from './lib/api'
 import { db } from './lib/db'
@@ -86,6 +89,9 @@ function App() {
   const [showMultiLanguage, setShowMultiLanguage] = useState(false)
   const [showItemEmbed, setShowItemEmbed] = useState(false)
   const [showKeyboardTutorial, setShowKeyboardTutorial] = useState(false)
+  const [showAdminDashboard, setShowAdminDashboard] = useState(false)
+  const [showUserAccount, setShowUserAccount] = useState(false)
+  const [showLoginModal, setShowLoginModal] = useState(false)
   const [selectedItems, setSelectedItems] = useState<string[]>([])
   const [compareItems, setCompareItems] = useState<Item[]>([])
   const [filters, setFilters] = useState<FilterState>({
@@ -237,6 +243,9 @@ function App() {
         onShowProfile={() => setShowProfile(true)}
         onShowNotifications={() => setShowNotifications(true)}
         onShowExport={() => setShowExport(true)}
+        onShowAdminDashboard={() => setShowAdminDashboard(true)}
+        onShowUserAccount={() => setShowUserAccount(true)}
+        onShowLogin={() => setShowLoginModal(true)}
         theme={theme}
         onToggleTheme={toggleTheme}
       />
@@ -520,6 +529,31 @@ function App() {
         <KeyboardTutorial
           isOpen={showKeyboardTutorial}
           onClose={() => setShowKeyboardTutorial(false)}
+        />
+      )}
+
+      {showAdminDashboard && (
+        <AdminDashboard
+          isOpen={showAdminDashboard}
+          onClose={() => setShowAdminDashboard(false)}
+        />
+      )}
+
+      {showUserAccount && (
+        <UserAccount
+          isOpen={showUserAccount}
+          onClose={() => setShowUserAccount(false)}
+        />
+      )}
+
+      {showLoginModal && (
+        <LoginModal
+          isOpen={showLoginModal}
+          onClose={() => setShowLoginModal(false)}
+          onLogin={() => {
+            // Refresh auth state
+            window.location.reload()
+          }}
         />
       )}
 

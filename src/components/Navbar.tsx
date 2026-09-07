@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import NotificationDropdown from './NotificationDropdown'
-
 import ThemeToggle from './ThemeToggle'
+import { authService } from '../lib/auth'
 
 interface NavbarProps {
   onPostItem: (type: 'pair' | 'free') => void
@@ -12,11 +12,14 @@ interface NavbarProps {
   onShowProfile?: () => void
   onShowNotifications?: () => void
   onShowExport?: () => void
+  onShowAdminDashboard?: () => void
+  onShowUserAccount?: () => void
+  onShowLogin?: () => void
   theme: 'light' | 'dark'
   onToggleTheme: () => void
 }
 
-export default function Navbar({ onPostItem, activeTab, setActiveTab, onShowShortcuts, onShowCommandPalette, onShowProfile, onShowNotifications, onShowExport, theme, onToggleTheme }: NavbarProps) {
+export default function Navbar({ onPostItem, activeTab, setActiveTab, onShowShortcuts, onShowCommandPalette, onShowProfile, onShowNotifications, onShowExport, onShowAdminDashboard, onShowUserAccount, onShowLogin, theme, onToggleTheme }: NavbarProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   return (
@@ -98,10 +101,19 @@ export default function Navbar({ onPostItem, activeTab, setActiveTab, onShowShor
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
               </svg>
             </button>
+            {authService.isAdmin() && (
+              <button
+                onClick={onShowAdminDashboard}
+                className="hidden sm:flex w-8 h-8 items-center justify-center rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 transition-all"
+                title="Admin Dashboard"
+              >
+                👑
+              </button>
+            )}
             <button
-              onClick={onShowProfile}
+              onClick={onShowUserAccount || onShowProfile}
               className="hidden sm:flex w-8 h-8 items-center justify-center rounded-lg bg-gradient-to-br from-cyan-500 to-cyan-300 text-black text-xs font-bold"
-              title="Profile"
+              title="My Account"
             >
               U
             </button>
