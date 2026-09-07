@@ -27,8 +27,8 @@ export default function Testimonials() {
           <p className="text-body max-w-xl mx-auto">See how our community is reuniting lost items and reducing waste.</p>
         </div>
 
-        <div className="max-w-3xl mx-auto mb-8">
-          <div className="panel p-8 md:p-10 relative" key={activeIndex}>
+        <div className="max-w-3xl mx-auto mb-6 sm:mb-8">
+          <div className="panel p-5 sm:p-8 md:p-10 relative" key={activeIndex}>
             <div className="absolute top-4 left-6 text-5xl text-cyan-500/10 font-serif">"</div>
             <div className="relative animate-fade-in">
               <div className="flex items-center gap-4 mb-6">

@@ -58,7 +58,7 @@ export default function CommandPalette({ isOpen, onClose, onNavigate, onPostItem
 
   return (
     <div className="fixed inset-0 z-[100] flex items-start justify-center pt-[20vh] px-4" style={{ background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(8px)' }} onClick={onClose}>
-      <div className="panel-elevated max-w-xl w-full animate-scale-in" onClick={(e) => e.stopPropagation()}>
+      <div className="panel-elevated w-full max-w-xl animate-scale-in mx-4 sm:mx-auto" onClick={(e) => e.stopPropagation()}>
         {/* Search Input */}
         <div className="p-4" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
           <div className="flex items-center gap-3">

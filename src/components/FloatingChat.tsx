@@ -69,7 +69,7 @@ export default function FloatingChat() {
       </button>
 
       {isOpen && (
-        <div className="fixed bottom-20 right-6 z-50 w-[340px] max-w-[calc(100vw-2rem)] panel-elevated overflow-hidden animate-scale-in">
+        <div className="fixed bottom-20 right-4 sm:right-6 z-50 w-[calc(100vw-2rem)] sm:w-[340px] max-w-sm panel-elevated overflow-hidden animate-scale-in">
           <div className="p-4 flex items-center gap-3" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
             <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #06b6d4, #22d3ee)' }}>
               <span className="text-sm">🤖</span>

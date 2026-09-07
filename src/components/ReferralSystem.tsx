@@ -33,7 +33,7 @@ export default function ReferralSystem() {
 
         <div className="panel p-6 md:p-8">
           {/* Stats */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8">
             <div className="text-center p-4 rounded-lg" style={{ background: 'rgba(255,255,255,0.02)' }}>
               <p className="text-[20px] font-bold gradient-text">{stats.totalReferrals}</p>
               <p className="text-[11px] text-zinc-500">Total Referrals</p>

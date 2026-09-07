@@ -53,7 +53,7 @@ export default function AdvancedFilters({ isOpen, onClose, onApply }: AdvancedFi
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(8px)' }}>
-      <div className="panel-elevated max-w-2xl w-full max-h-[90vh] overflow-y-auto animate-scale-in">
+      <div className="panel-elevated w-full max-w-2xl max-h-[90vh] overflow-y-auto animate-scale-in mx-4 sm:mx-auto">
         {/* Header */}
         <div className="sticky top-0 z-10 p-6 flex items-center justify-between" style={{ background: 'rgba(10,10,11,0.95)', backdropFilter: 'blur(10px)', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
           <div>

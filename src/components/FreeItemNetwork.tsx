@@ -94,7 +94,7 @@ export default function FreeItemNetwork({ items, onPostItem, onSelectItem, onTog
           ))}
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4">
           {filteredItems.map((item) => (
             <div key={item.id} className="card card-interactive group" onClick={() => onSelectItem?.(item)}>
               <div className="h-32 rounded-lg flex items-center justify-center relative mb-4" style={{ background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.05), rgba(16, 185, 129, 0.02))' }}>

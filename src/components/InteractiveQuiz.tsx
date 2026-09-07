@@ -31,12 +31,12 @@ export default function InteractiveQuiz() {
 
   if (!isOpen) {
     return (
-      <div className="fixed bottom-6 left-6 z-40">
-        <button onClick={() => setIsOpen(true)} className="panel-elevated p-3 flex items-center gap-3 hover:border-cyan-500/20 transition-all">
-          <span className="text-xl">🧠</span>
+      <div className="fixed bottom-4 sm:bottom-6 left-4 sm:left-6 z-40">
+        <button onClick={() => setIsOpen(true)} className="panel-elevated p-2.5 sm:p-3 flex items-center gap-2 sm:gap-3 hover:border-cyan-500/20 transition-all">
+          <span className="text-lg sm:text-xl">🧠</span>
           <div className="text-left">
-            <p className="text-[12px] font-semibold text-white">Need help?</p>
-            <p className="text-[10px] text-cyan-400">Take our quick quiz →</p>
+            <p className="text-[11px] sm:text-[12px] font-semibold text-white">Need help?</p>
+            <p className="text-[9px] sm:text-[10px] text-cyan-400">Take our quick quiz →</p>
           </div>
         </button>
       </div>
@@ -44,7 +44,7 @@ export default function InteractiveQuiz() {
   }
 
   return (
-    <div className="fixed bottom-6 left-6 z-40 w-[340px] max-w-[calc(100vw-3rem)]">
+    <div className="fixed bottom-4 sm:bottom-6 left-4 sm:left-6 z-40 w-[calc(100vw-2rem)] sm:w-[340px] max-w-sm">
       <div className="panel-elevated overflow-hidden animate-scale-in">
         <div className="p-4 flex items-center justify-between" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
           <div className="flex items-center gap-2">

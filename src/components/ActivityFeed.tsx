@@ -45,7 +45,7 @@ export default function ActivityFeed() {
   return (
     <section className="py-16 md:py-20">
       <div className="max-w-6xl mx-auto px-6">
-        <div className="grid md:grid-cols-2 gap-8">
+        <div className="grid md:grid-cols-2 gap-6 sm:gap-8">
           {/* Activity Feed */}
           <div>
             <div className="flex items-center justify-between mb-6">

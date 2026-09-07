@@ -20,7 +20,7 @@ export default function EcoCalculator() {
         </div>
 
         <div className="panel p-6 md:p-10">
-          <div className="grid md:grid-cols-2 gap-10">
+          <div className="grid md:grid-cols-2 gap-6 sm:gap-10">
             <div className="space-y-6">
               {[
                 { label: 'Items matched', icon: '🔗', value: itemsMatched, setValue: setItemsMatched, max: 20, color: '#06b6d4' },

@@ -25,10 +25,10 @@ export default function LiveTicker() {
   if (!isVisible) return null
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-30 py-2 overflow-hidden" style={{ background: 'rgba(10,10,11,0.9)', borderTop: '1px solid rgba(255,255,255,0.06)', backdropFilter: 'blur(10px)' }}>
+    <div className="fixed bottom-0 left-0 right-0 z-30 py-1.5 sm:py-2 overflow-hidden" style={{ background: 'rgba(10,10,11,0.95)', borderTop: '1px solid rgba(255,255,255,0.06)', backdropFilter: 'blur(10px)' }}>
       <div className="flex whitespace-nowrap ticker-scroll">
         {[...tickerItems, ...tickerItems].map((item, i) => (
-          <span key={i} className="inline-flex items-center gap-2 px-6 text-[12px] text-zinc-400">
+          <span key={i} className="inline-flex items-center gap-2 px-4 sm:px-6 text-[11px] sm:text-[12px] text-zinc-400">
             {item}
             <span className="text-zinc-700">•</span>
           </span>
