@@ -23,6 +23,15 @@ import ShareModal from './components/ShareModal'
 import OfflineIndicator from './components/OfflineIndicator'
 import VoiceSearch from './components/VoiceSearch'
 import DataExport from './components/DataExport'
+import WishlistPage from './components/WishlistPage'
+import SearchSuggestions from './components/SearchSuggestions'
+import SimilarItems from './components/SimilarItems'
+import SellerReviews from './components/SellerReviews'
+import QuickActions from './components/QuickActions'
+import WelcomeTour from './components/WelcomeTour'
+import ItemCollections from './components/ItemCollections'
+import AnalyticsCharts from './components/AnalyticsCharts'
+import DuplicateListing from './components/DuplicateListing'
 import useTheme from './hooks/useTheme'
 import { initializeDatabase, itemsApi, userApi } from './lib/api'
 import { db } from './lib/db'
@@ -43,6 +52,10 @@ function App() {
   const [showComparison, setShowComparison] = useState(false)
   const [showShare, setShowShare] = useState(false)
   const [showExport, setShowExport] = useState(false)
+  const [showWishlist, setShowWishlist] = useState(false)
+  const [showCollections, setShowCollections] = useState(false)
+  const [showDuplicate, setShowDuplicate] = useState(false)
+  const [showWelcomeTour, setShowWelcomeTour] = useState(true)
   const [compareItems, setCompareItems] = useState<Item[]>([])
   const [filters, setFilters] = useState<FilterState>({
     priceMin: 0,
@@ -219,6 +232,8 @@ function App() {
         )}
         
         <ActivityFeed />
+        
+        <AnalyticsCharts />
       </main>
 
       {/* Mobile Bottom Navigation */}
@@ -231,6 +246,12 @@ function App() {
       {/* Floating Elements */}
       <OfflineIndicator />
       <FloatingChat />
+      <QuickActions
+        onPostItem={() => handlePostItem(activeTab === 'findapair' ? 'pair' : 'free')}
+        onOpenWishlist={() => setShowWishlist(true)}
+        onOpenCommandPalette={() => setShowCommandPalette(true)}
+        onToggleTheme={toggleTheme}
+      />
 
       {/* Modals */}
       {showPostModal && (
@@ -297,6 +318,46 @@ function App() {
 
       {showExport && (
         <DataExport isOpen={showExport} onClose={() => setShowExport(false)} />
+      )}
+
+      {showWishlist && (
+        <WishlistPage
+          isOpen={showWishlist}
+          onClose={() => setShowWishlist(false)}
+          onSelectItem={(item) => {
+            setShowWishlist(false)
+            setSelectedItem(item)
+          }}
+          onRemoveFromWishlist={handleToggleWishlist}
+        />
+      )}
+
+      {showCollections && (
+        <ItemCollections
+          isOpen={showCollections}
+          onClose={() => setShowCollections(false)}
+          allItems={items}
+          onSelectItem={(item) => {
+            setShowCollections(false)
+            setSelectedItem(item)
+          }}
+        />
+      )}
+
+      {showDuplicate && selectedItem && (
+        <DuplicateListing
+          item={selectedItem}
+          onSubmit={(itemData) => {
+            handlePostSuccess(itemData)
+            setShowDuplicate(false)
+            setSelectedItem(null)
+          }}
+          onClose={() => setShowDuplicate(false)}
+        />
+      )}
+
+      {showWelcomeTour && (
+        <WelcomeTour onClose={() => setShowWelcomeTour(false)} />
       )}
 
       {/* Toast Notifications */}
