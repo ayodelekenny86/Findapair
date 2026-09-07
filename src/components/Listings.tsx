@@ -8,9 +8,11 @@ interface ListingsProps {
   onSelectItem: (item: Item) => void
   onToggleWishlist: (itemId: string) => void
   onOpenFilters?: () => void
+  selectedItems?: string[]
+  onToggleSelect?: (id: string) => void
 }
 
-export default function Listings({ items, type, onPostItem, onSelectItem, onToggleWishlist, onOpenFilters }: ListingsProps) {
+export default function Listings({ items, type, onPostItem, onSelectItem, onToggleWishlist, onOpenFilters, selectedItems = [], onToggleSelect }: ListingsProps) {
   const [search, setSearch] = useState('')
   const [category, setCategory] = useState('All')
 

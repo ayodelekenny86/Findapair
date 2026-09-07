@@ -32,6 +32,16 @@ import WelcomeTour from './components/WelcomeTour'
 import ItemCollections from './components/ItemCollections'
 import AnalyticsCharts from './components/AnalyticsCharts'
 import DuplicateListing from './components/DuplicateListing'
+import ReportItem from './components/ReportItem'
+import BulkActions from './components/BulkActions'
+import ItemHistory from './components/ItemHistory'
+import PriceAlerts from './components/PriceAlerts'
+import ItemTemplates from './components/ItemTemplates'
+import LocationMapView from './components/LocationMapView'
+import ItemNotes from './components/ItemNotes'
+import SavedFilterPresets from './components/SavedFilterPresets'
+import ItemStatusTracker from './components/ItemStatusTracker'
+import BatchImport from './components/BatchImport'
 import useTheme from './hooks/useTheme'
 import { initializeDatabase, itemsApi, userApi } from './lib/api'
 import { db } from './lib/db'
@@ -56,6 +66,11 @@ function App() {
   const [showCollections, setShowCollections] = useState(false)
   const [showDuplicate, setShowDuplicate] = useState(false)
   const [showWelcomeTour, setShowWelcomeTour] = useState(true)
+  const [showReport, setShowReport] = useState(false)
+  const [showPriceAlerts, setShowPriceAlerts] = useState(false)
+  const [showTemplates, setShowTemplates] = useState(false)
+  const [showBatchImport, setShowBatchImport] = useState(false)
+  const [selectedItems, setSelectedItems] = useState<string[]>([])
   const [compareItems, setCompareItems] = useState<Item[]>([])
   const [filters, setFilters] = useState<FilterState>({
     priceMin: 0,
@@ -216,19 +231,39 @@ function App() {
         
         <RecentlyViewed onSelectItem={handleSelectItem} />
         
+        <SavedFilterPresets
+          currentFilters={filters}
+          onApplyPreset={setFilters}
+        />
+        
         {loading ? (
           <div className="py-20 text-center">
             <div className="inline-block w-6 h-6 border-2 border-cyan-500 border-t-transparent rounded-full animate-spin"></div>
           </div>
         ) : (
-          <Listings
-            items={filteredItems}
-            type={activeTab}
-            onPostItem={handlePostItem}
-            onSelectItem={handleSelectItem}
-            onToggleWishlist={handleToggleWishlist}
-            onOpenFilters={() => setShowAdvancedFilters(true)}
-          />
+          <>
+            <Listings
+              items={filteredItems}
+              type={activeTab}
+              onPostItem={handlePostItem}
+              onSelectItem={handleSelectItem}
+              onToggleWishlist={handleToggleWishlist}
+              onOpenFilters={() => setShowAdvancedFilters(true)}
+              selectedItems={selectedItems}
+              onToggleSelect={(id) => {
+                setSelectedItems(prev => 
+                  prev.includes(id) 
+                    ? prev.filter(i => i !== id)
+                    : [...prev, id]
+                )
+              }}
+            />
+            
+            <LocationMapView
+              items={filteredItems}
+              onSelectItem={handleSelectItem}
+            />
+          </>
         )}
         
         <ActivityFeed />
@@ -358,6 +393,82 @@ function App() {
 
       {showWelcomeTour && (
         <WelcomeTour onClose={() => setShowWelcomeTour(false)} />
+      )}
+
+      {showReport && selectedItem && (
+        <ReportItem
+          item={selectedItem}
+          onClose={() => setShowReport(false)}
+          onSubmit={(reason) => {
+            addToast({
+              type: 'success',
+              title: 'Report submitted',
+              message: 'Thank you for helping keep our community safe',
+              emoji: '✓',
+            })
+            setShowReport(false)
+          }}
+        />
+      )}
+
+      {showPriceAlerts && (
+        <PriceAlerts
+          isOpen={showPriceAlerts}
+          onClose={() => setShowPriceAlerts(false)}
+        />
+      )}
+
+      {showTemplates && (
+        <ItemTemplates
+          isOpen={showTemplates}
+          onClose={() => setShowTemplates(false)}
+          onUseTemplate={(template) => {
+            setShowTemplates(false)
+            handlePostItem('pair')
+            addToast({
+              type: 'info',
+              title: 'Template loaded',
+              message: 'Fill in the details to post your item',
+              emoji: '📋',
+            })
+          }}
+        />
+      )}
+
+      {showBatchImport && (
+        <BatchImport
+          isOpen={showBatchImport}
+          onClose={() => setShowBatchImport(false)}
+          onImport={(importedItems) => {
+            // Add imported items to database
+            importedItems.forEach(item => {
+              itemsApi.create(item)
+            })
+            loadItems()
+            addToast({
+              type: 'success',
+              title: 'Import successful',
+              message: `${importedItems.length} items imported`,
+              emoji: '✓',
+            })
+          }}
+        />
+      )}
+
+      {selectedItems.length > 0 && (
+        <BulkActions
+          items={items}
+          selectedItems={selectedItems}
+          onClearSelection={() => setSelectedItems([])}
+          onBulkAction={(action, itemIds) => {
+            addToast({
+              type: 'success',
+              title: 'Bulk action completed',
+              message: `${itemIds.length} items ${action}ed`,
+              emoji: '✓',
+            })
+          }}
+        />
       )}
 
       {/* Toast Notifications */}
