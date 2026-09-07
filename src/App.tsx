@@ -28,6 +28,9 @@ import PriceHistoryChart from './components/PriceHistoryChart'
 import AnalyticsDashboard from './components/AnalyticsDashboard'
 import GamificationDashboard from './components/GamificationDashboard'
 import LiveNotifications from './components/LiveNotifications'
+import PricingPage from './components/PricingPage'
+import AdBanner from './components/AdBanner'
+import MonetizationGuide from './components/MonetizationGuide'
 import { initializeDatabase, itemsApi, userApi } from './lib/api'
 import { db } from './lib/db'
 import { gamificationService } from './lib/gamification'
@@ -331,6 +334,25 @@ function App() {
 
       <Testimonials />
       
+      <div className="separator-gradient max-w-6xl mx-auto"></div>
+
+      {/* Ad Banner - Between testimonials and FAQ */}
+      <div className="max-w-6xl mx-auto px-4 sm:px-6">
+        <AdBanner size="leaderboard" />
+      </div>
+
+      <div className="separator-gradient max-w-6xl mx-auto"></div>
+
+      {/* Pricing Section */}
+      <div id="pricing">
+        <PricingPage />
+      </div>
+
+      <div className="separator-gradient max-w-6xl mx-auto"></div>
+
+      {/* Monetization Guide for Site Owner */}
+      <MonetizationGuide />
+
       <div className="separator-gradient max-w-6xl mx-auto"></div>
 
       <FAQ />
