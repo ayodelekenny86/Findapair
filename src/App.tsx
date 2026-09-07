@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import Navbar from './components/Navbar'
 import Hero from './components/Hero'
 import StatsBar from './components/StatsBar'
@@ -25,35 +25,102 @@ import CommandPalette from './components/CommandPalette'
 import AdvancedFilters from './components/AdvancedFilters'
 import ReferralSystem from './components/ReferralSystem'
 import PriceHistoryChart from './components/PriceHistoryChart'
+import { initializeDatabase, itemsApi, userApi } from './lib/api'
+import { db } from './lib/db'
+import type { Item } from './lib/db'
 
 function App() {
   const [activeSection, setActiveSection] = useState<'findapair' | 'freeitem'>('findapair')
   const [showPostModal, setShowPostModal] = useState(false)
   const [postType, setPostType] = useState<'pair' | 'free'>('pair')
   const [showConfetti, setShowConfetti] = useState(false)
-  const [selectedItem, setSelectedItem] = useState<any>(null)
+  const [selectedItem, setSelectedItem] = useState<Item | null>(null)
   const [showDashboard, setShowDashboard] = useState(false)
   const [showCommandPalette, setShowCommandPalette] = useState(false)
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false)
+  const [items, setItems] = useState<Item[]>([])
+  const [loading, setLoading] = useState(true)
   const { toasts, addToast, removeToast } = useToasts()
+
+  // Initialize database on mount
+  useEffect(() => {
+    initializeDatabase()
+    loadItems()
+  }, [])
+
+  // Load items from database
+  const loadItems = async () => {
+    setLoading(true)
+    try {
+      const response = await itemsApi.getAll()
+      if (response.success && response.data) {
+        setItems(response.data)
+      }
+    } catch (error) {
+      console.error('Failed to load items:', error)
+      addToast({
+        type: 'error',
+        title: 'Failed to load items',
+        message: 'Please refresh the page',
+        emoji: '⚠️',
+      })
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const handlePostItem = (type: 'pair' | 'free') => {
     setPostType(type)
     setShowPostModal(true)
   }
 
-  const handlePostSuccess = () => {
-    setShowConfetti(true)
-    setTimeout(() => setShowConfetti(false), 4000)
-    addToast({
-      type: 'success',
-      title: 'Item posted successfully!',
-      message: 'Our AI is already scanning for matches.',
-      emoji: '🎉',
-    })
+  const handlePostSuccess = async (itemData: any) => {
+    try {
+      const user = db.getCurrentUser()
+      
+      const response = await itemsApi.create({
+        type: itemData.type,
+        title: itemData.title,
+        description: itemData.description,
+        category: itemData.category,
+        emoji: itemData.emoji || '📦',
+        location: itemData.location,
+        postedAgo: 'Just now',
+        seller: user.name,
+        sellerId: user.id,
+        price: itemData.price,
+        originalPrice: itemData.originalPrice,
+        matchScore: Math.floor(Math.random() * 20) + 80,
+        verified: user.trustScore > 90,
+        condition: itemData.condition || 'Good',
+        trustScore: user.trustScore,
+        donationOption: itemData.donationOption || false,
+        urgency: 'normal',
+        images: [],
+      })
+
+      if (response.success) {
+        setShowConfetti(true)
+        setTimeout(() => setShowConfetti(false), 4000)
+        addToast({
+          type: 'success',
+          title: 'Item posted successfully!',
+          message: 'Our AI is already scanning for matches.',
+          emoji: '🎉',
+        })
+        await loadItems() // Refresh items
+      }
+    } catch (error) {
+      addToast({
+        type: 'error',
+        title: 'Failed to post item',
+        message: 'Please try again',
+        emoji: '⚠️',
+      })
+    }
   }
 
-  const handleNavigate = (section: string) => {
+  const handleNavigate = useCallback((section: string) => {
     if (section === 'findapair' || section === 'freeitem') {
       setActiveSection(section)
       window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -63,12 +130,45 @@ function App() {
         element.scrollIntoView({ behavior: 'smooth' })
       }
     }
+  }, [])
+
+  const handleSelectItem = async (item: Item) => {
+    try {
+      const response = await itemsApi.getById(item.id)
+      if (response.success && response.data) {
+        setSelectedItem(response.data)
+      } else {
+        setSelectedItem(item)
+      }
+    } catch {
+      setSelectedItem(item)
+    }
+  }
+
+  const handleToggleWishlist = async (itemId: string) => {
+    try {
+      const response = await userApi.toggleWishlist(itemId)
+      if (response.success && response.data) {
+        addToast({
+          type: 'info',
+          title: response.data.added ? 'Added to wishlist' : 'Removed from wishlist',
+          message: response.data.added ? 'Item saved for later' : 'Item removed from wishlist',
+          emoji: response.data.added ? '❤️' : '💔',
+        })
+      }
+    } catch (error) {
+      addToast({
+        type: 'error',
+        title: 'Failed to update wishlist',
+        message: 'Please try again',
+        emoji: '⚠️',
+      })
+    }
   }
 
   // Keyboard shortcuts
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      // Don't trigger if user is typing in an input
       if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
         return
       }
@@ -102,8 +202,11 @@ function App() {
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [activeSection])
 
+  const pairItems = items.filter(i => i.type === 'pair')
+  const freeItems = items.filter(i => i.type === 'free')
+
   return (
-    <div className="min-h-screen bg-[#0a0a0b] text-white font-[Inter] bg-grid bg-noise">
+    <div className="min-h-screen bg-[#09090b] text-white font-[Inter] bg-grid bg-noise">
       <Navbar 
         onPostItem={handlePostItem} 
         activeSection={activeSection} 
@@ -119,18 +222,27 @@ function App() {
       
       <div className="separator-gradient max-w-6xl mx-auto"></div>
       
-      {activeSection === 'findapair' ? (
+      {loading ? (
+        <div className="py-20 text-center">
+          <div className="inline-block w-8 h-8 border-2 border-cyan-500 border-t-transparent rounded-full animate-spin"></div>
+          <p className="mt-4 text-zinc-500">Loading items...</p>
+        </div>
+      ) : activeSection === 'findapair' ? (
         <FindAPairSection 
+          items={pairItems}
           onPostItem={handlePostItem} 
           addToast={addToast}
-          onSelectItem={setSelectedItem}
+          onSelectItem={handleSelectItem}
+          onToggleWishlist={handleToggleWishlist}
           onOpenFilters={() => setShowAdvancedFilters(true)}
         />
       ) : (
         <FreeItemNetwork 
+          items={freeItems}
           onPostItem={handlePostItem} 
           addToast={addToast}
-          onSelectItem={setSelectedItem}
+          onSelectItem={handleSelectItem}
+          onToggleWishlist={handleToggleWishlist}
         />
       )}
 
@@ -160,7 +272,7 @@ function App() {
       
       <div className="separator-gradient max-w-6xl mx-auto"></div>
 
-      <div className="max-w-4xl mx-auto px-6">
+      <div className="max-w-4xl mx-auto px-6 py-8">
         <PriceHistoryChart />
       </div>
       
@@ -182,14 +294,20 @@ function App() {
 
       {/* Modals */}
       {showPostModal && (
-        <PostItemModal type={postType} onClose={() => { setShowPostModal(false); handlePostSuccess(); }} />
+        <PostItemModal 
+          type={postType} 
+          onClose={() => setShowPostModal(false)}
+          onSubmit={handlePostSuccess}
+        />
       )}
 
       {selectedItem && (
         <ItemDetailModal 
           item={selectedItem} 
-          type={activeSection === 'findapair' ? 'pair' : 'free'} 
-          onClose={() => setSelectedItem(null)} 
+          type={selectedItem.type} 
+          onClose={() => setSelectedItem(null)}
+          onToggleWishlist={handleToggleWishlist}
+          addToast={addToast}
         />
       )}
 

@@ -3,13 +3,30 @@ import { useState } from 'react'
 interface PostItemModalProps {
   type: 'pair' | 'free'
   onClose: () => void
+  onSubmit?: (itemData: any) => void
 }
 
-export default function PostItemModal({ type, onClose }: PostItemModalProps) {
+export default function PostItemModal({ type, onClose, onSubmit }: PostItemModalProps) {
   const [submitted, setSubmitted] = useState(false)
+  const [formData, setFormData] = useState<any>({})
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
+    const form = e.target as HTMLFormElement
+    const data = new FormData(form)
+    const itemData = {
+      type,
+      title: data.get('title'),
+      description: data.get('description'),
+      category: data.get('category'),
+      location: data.get('location'),
+      price: data.get('price') ? Number(data.get('price')) : undefined,
+      originalPrice: data.get('originalPrice') ? Number(data.get('originalPrice')) : undefined,
+      condition: data.get('condition'),
+      donationOption: data.get('donationOption') === 'on',
+      emoji: type === 'pair' ? '💎' : '🎁',
+    }
+    onSubmit?.(itemData)
     setSubmitted(true)
   }
 
@@ -50,18 +67,18 @@ export default function PostItemModal({ type, onClose }: PostItemModalProps) {
             <label className="text-[12px] font-semibold text-zinc-400 mb-1.5 block uppercase tracking-wider">
               {type === 'pair' ? 'What solo item do you have?' : 'What are you giving away?'}
             </label>
-            <input type="text" required placeholder={type === 'pair' ? 'e.g., Left gold hoop earring, 14k' : 'e.g., IKEA bookshelf, white'} className="input-field" />
+            <input type="text" name="title" required placeholder={type === 'pair' ? 'e.g., Left gold hoop earring, 14k' : 'e.g., IKEA bookshelf, white'} className="input-field" />
           </div>
 
           <div>
             <label className="text-[12px] font-semibold text-zinc-400 mb-1.5 block uppercase tracking-wider">Description</label>
-            <textarea required rows={3} placeholder={type === 'pair' ? 'Describe the item, condition, size, brand...' : 'Describe the item and pickup details...'} className="input-field resize-none" />
+            <textarea name="description" required rows={3} placeholder={type === 'pair' ? 'Describe the item, condition, size, brand...' : 'Describe the item and pickup details...'} className="input-field resize-none" />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="text-[12px] font-semibold text-zinc-400 mb-1.5 block uppercase tracking-wider">Category</label>
-              <select className="input-field">
+              <select name="category" className="input-field">
                 {type === 'pair' ? (
                   <><option>Earrings</option><option>Shoes</option><option>Gloves</option><option>Glasses</option><option>Watches</option><option>Cufflinks</option><option>Other</option></>
                 ) : (
@@ -71,19 +88,30 @@ export default function PostItemModal({ type, onClose }: PostItemModalProps) {
             </div>
             <div>
               <label className="text-[12px] font-semibold text-zinc-400 mb-1.5 block uppercase tracking-wider">Location</label>
-              <input type="text" required placeholder="City, State" className="input-field" />
+              <input type="text" name="location" required placeholder="City, State" className="input-field" />
             </div>
+          </div>
+
+          <div>
+            <label className="text-[12px] font-semibold text-zinc-400 mb-1.5 block uppercase tracking-wider">Condition</label>
+            <select name="condition" className="input-field">
+              <option>New</option>
+              <option>Like New</option>
+              <option>Excellent</option>
+              <option>Good</option>
+              <option>Fair</option>
+            </select>
           </div>
 
           {type === 'pair' && (
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="text-[12px] font-semibold text-zinc-400 mb-1.5 block uppercase tracking-wider">Your price</label>
-                <input type="text" required placeholder="e.g., $45" className="input-field" />
+                <label className="text-[12px] font-semibold text-zinc-400 mb-1.5 block uppercase tracking-wider">Your price ($)</label>
+                <input type="number" name="price" required placeholder="45" className="input-field" />
               </div>
               <div>
-                <label className="text-[12px] font-semibold text-zinc-400 mb-1.5 block uppercase tracking-wider">Original pair price</label>
-                <input type="text" placeholder="e.g., $180" className="input-field" />
+                <label className="text-[12px] font-semibold text-zinc-400 mb-1.5 block uppercase tracking-wider">Original pair price ($)</label>
+                <input type="number" name="originalPrice" placeholder="180" className="input-field" />
               </div>
             </div>
           )}
@@ -102,7 +130,7 @@ export default function PostItemModal({ type, onClose }: PostItemModalProps) {
 
           {type === 'free' && (
             <div className="flex items-center gap-3 p-4 rounded-lg" style={{ background: 'rgba(16, 185, 129, 0.05)', border: '1px solid rgba(16, 185, 129, 0.15)' }}>
-              <input type="checkbox" id="donation" className="w-4 h-4 accent-emerald-500" />
+              <input type="checkbox" name="donationOption" id="donation" className="w-4 h-4 accent-emerald-500" />
               <label htmlFor="donation" className="text-[13px] text-zinc-300 cursor-pointer">
                 <span className="font-semibold text-emerald-400">♻️ Open to donation pickup</span>
                 <br />

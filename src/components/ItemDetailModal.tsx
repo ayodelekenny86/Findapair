@@ -1,9 +1,13 @@
 import { useState, useEffect } from 'react'
+import type { Item } from '../lib/db'
+import type { Toast } from './Toast'
 
 interface ItemDetailModalProps {
-  item: any
+  item: Item
   type: 'pair' | 'free'
   onClose: () => void
+  onToggleWishlist?: (itemId: string) => void
+  addToast?: (toast: Omit<Toast, 'id'>) => void
 }
 
 export default function ItemDetailModal({ item, type, onClose }: ItemDetailModalProps) {
@@ -12,17 +16,18 @@ export default function ItemDetailModal({ item, type, onClose }: ItemDetailModal
   const [showShareMenu, setShowShareMenu] = useState(false)
 
   useEffect(() => {
-    const wishlist = JSON.parse(localStorage.getItem('wishlist') || '[]')
-    setIsWishlisted(wishlist.includes(item.id))
+    import('../lib/db').then((module) => {
+      const user = module.db.getCurrentUser()
+      setIsWishlisted(user.wishlist.includes(item.id))
+    })
   }, [item.id])
 
-  const toggleWishlist = () => {
-    const wishlist = JSON.parse(localStorage.getItem('wishlist') || '[]')
-    const newWishlist = isWishlisted
-      ? wishlist.filter((id: number) => id !== item.id)
-      : [...wishlist, item.id]
-    localStorage.setItem('wishlist', JSON.stringify(newWishlist))
-    setIsWishlisted(!isWishlisted)
+  const toggleWishlist = async () => {
+    const { userApi } = await import('../lib/api')
+    const response = await userApi.toggleWishlist(item.id)
+    if (response.success && response.data) {
+      setIsWishlisted(response.data.added)
+    }
   }
 
   const shareItem = (platform: string) => {
@@ -161,10 +166,10 @@ export default function ItemDetailModal({ item, type, onClose }: ItemDetailModal
               <div className="panel p-6">
                 <div className="flex items-center gap-4 mb-4">
                   <div className="w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold text-black" style={{ background: 'linear-gradient(135deg, #06b6d4, #22d3ee)' }}>
-                    {item.seller?.[0] || item.giver?.[0] || 'U'}
+                    {item.seller?.[0] || 'U'}
                   </div>
                   <div>
-                    <h4 className="text-[16px] font-semibold text-white">{item.seller || item.giver}</h4>
+                    <h4 className="text-[16px] font-semibold text-white">{item.seller}</h4>
                     <p className="text-[12px] text-zinc-500">Member since 2024</p>
                   </div>
                 </div>

@@ -1,27 +1,14 @@
 import { useState } from 'react'
 import type { Toast } from './Toast'
+import type { Item } from '../lib/db'
 
 interface FindAPairSectionProps {
+  items: Item[]
   onPostItem: (type: 'pair' | 'free') => void
   addToast?: (toast: Omit<Toast, 'id'>) => void
-  onSelectItem?: (item: any) => void
+  onSelectItem?: (item: Item) => void
+  onToggleWishlist?: (itemId: string) => void
   onOpenFilters?: () => void
-}
-
-interface PairItem {
-  id: number
-  title: string
-  description: string
-  category: string
-  emoji: string
-  location: string
-  postedAgo: string
-  seller: string
-  price: number
-  originalPrice: number
-  matchScore: number
-  verified: boolean
-  condition: string
 }
 
 const categories = [
@@ -34,45 +21,22 @@ const categories = [
   { name: 'Cufflinks', icon: '✨' },
 ]
 
-const pairItems: PairItem[] = [
-  { id: 1, title: 'Left Gold Hoop Earring - 14k', description: 'Lost the right one at a concert. 14k gold, medium size hoop.', category: 'Earrings', emoji: '💎', location: 'Manhattan, NY', postedAgo: '2h ago', seller: 'Sarah K.', price: 85, originalPrice: 320, matchScore: 94, verified: true, condition: 'Excellent' },
-  { id: 2, title: 'Right Nike Air Max - Size 10', description: 'My dog chewed the left one! Brand new Nike Air Max 90, black/white.', category: 'Shoes', emoji: '👟', location: 'Brooklyn, NY', postedAgo: '5h ago', seller: 'Mike R.', price: 45, originalPrice: 130, matchScore: 88, verified: true, condition: 'Like New' },
-  { id: 3, title: 'Single Cashmere Glove - Left', description: 'Left behind on the subway. Pure cashmere, charcoal gray, women\'s medium.', category: 'Gloves', emoji: '🧤', location: 'Chicago, IL', postedAgo: '1d ago', seller: 'Lisa M.', price: 25, originalPrice: 78, matchScore: 91, verified: false, condition: 'Good' },
-  { id: 4, title: 'Pearl Stud Earring - Right', description: 'Real freshwater pearl, sterling silver post. Lost the left one.', category: 'Earrings', emoji: '🦪', location: 'San Francisco, CA', postedAgo: '3h ago', seller: 'Emma T.', price: 40, originalPrice: 150, matchScore: 96, verified: true, condition: 'Excellent' },
-  { id: 5, title: 'Left Ray-Ban Aviator Lens', description: 'Cracked my right lens and need a replacement. Classic green Ray-Ban.', category: 'Glasses', emoji: '👓', location: 'Austin, TX', postedAgo: '6h ago', seller: 'David P.', price: 30, originalPrice: 163, matchScore: 82, verified: true, condition: 'Good' },
-  { id: 6, title: 'Silver Cufflink - Single', description: 'Tiffany & Co. silver cufflink with blue enamel. Gift from my father.', category: 'Cufflinks', emoji: '✨', location: 'Boston, MA', postedAgo: '12h ago', seller: 'James W.', price: 65, originalPrice: 225, matchScore: 89, verified: true, condition: 'Excellent' },
-  { id: 7, title: 'Left Adidas Ultraboost - Size 9', description: 'Core black Ultraboost 22. Left shoe only. Worn about 10 times.', category: 'Shoes', emoji: '👟', location: 'Portland, OR', postedAgo: '1d ago', seller: 'Alex N.', price: 35, originalPrice: 190, matchScore: 85, verified: false, condition: 'Good' },
-  { id: 8, title: 'Diamond Stud Earring - Left', description: '0.25ct diamond, white gold setting. Looking for the matching pair.', category: 'Earrings', emoji: '💍', location: 'Miami, FL', postedAgo: '4h ago', seller: 'Rachel G.', price: 200, originalPrice: 850, matchScore: 97, verified: true, condition: 'Excellent' },
-]
-
-export default function FindAPairSection({ onPostItem, addToast, onSelectItem, onOpenFilters }: FindAPairSectionProps) {
+export default function FindAPairSection({ items, onPostItem, addToast, onSelectItem, onToggleWishlist, onOpenFilters }: FindAPairSectionProps) {
   const [selectedCategory, setSelectedCategory] = useState('All')
   const [searchQuery, setSearchQuery] = useState('')
   const [sortBy, setSortBy] = useState('match')
-  const [wishlist, setWishlist] = useState<number[]>([])
 
-  const filteredItems = pairItems.filter(item => {
+  const filteredItems = items.filter(item => {
     const matchesCategory = selectedCategory === 'All' || item.category === selectedCategory
     const matchesSearch = item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       item.description.toLowerCase().includes(searchQuery.toLowerCase())
     return matchesCategory && matchesSearch
   }).sort((a, b) => {
     if (sortBy === 'match') return b.matchScore - a.matchScore
-    if (sortBy === 'price-low') return a.price - b.price
-    if (sortBy === 'price-high') return b.price - a.price
+    if (sortBy === 'price-low') return (a.price || 0) - (b.price || 0)
+    if (sortBy === 'price-high') return (b.price || 0) - (a.price || 0)
     return 0
   })
-
-  const toggleWishlist = (id: number, title: string) => {
-    setWishlist(prev => {
-      if (prev.includes(id)) {
-        return prev.filter(i => i !== id)
-      } else {
-        addToast?.({ type: 'info', title: 'Added to Wishlist', message: `"${title}" saved`, emoji: '❤️' })
-        return [...prev, id]
-      }
-    })
-  }
 
   return (
     <section id="listings" className="py-16 md:py-20">
@@ -114,6 +78,12 @@ export default function FindAPairSection({ onPostItem, addToast, onSelectItem, o
               <option value="newest">Newest first</option>
             </select>
             <button
+              onClick={() => onOpenFilters?.()}
+              className="btn-secondary whitespace-nowrap"
+            >
+              ⚙️ Filters
+            </button>
+            <button
               onClick={() => onPostItem('pair')}
               className="btn-primary whitespace-nowrap"
             >
@@ -121,7 +91,6 @@ export default function FindAPairSection({ onPostItem, addToast, onSelectItem, o
             </button>
           </div>
 
-          {/* AI Suggestion */}
           {searchQuery && (
             <div className="mt-4 px-4 py-3 rounded-lg flex items-center gap-3" style={{ background: 'rgba(6, 182, 212, 0.05)', border: '1px solid rgba(6, 182, 212, 0.15)' }}>
               <span className="text-cyan-400 text-sm">✨</span>
@@ -162,6 +131,7 @@ export default function FindAPairSection({ onPostItem, addToast, onSelectItem, o
             <div
               key={item.id}
               className="card card-interactive group"
+              onClick={() => onSelectItem?.(item)}
             >
               {/* Image Area */}
               <div className="h-36 rounded-lg flex items-center justify-center relative mb-4" style={{ background: 'linear-gradient(135deg, rgba(6, 182, 212, 0.05), rgba(6, 182, 212, 0.02))' }}>
@@ -175,13 +145,11 @@ export default function FindAPairSection({ onPostItem, addToast, onSelectItem, o
 
                 {/* Wishlist */}
                 <button
-                  onClick={(e) => { e.stopPropagation(); toggleWishlist(item.id, item.title); }}
+                  onClick={(e) => { e.stopPropagation(); onToggleWishlist?.(item.id); }}
                   className="absolute top-3 right-3 w-7 h-7 rounded-full flex items-center justify-center transition-all opacity-0 group-hover:opacity-100"
-                  style={{ background: wishlist.includes(item.id) ? 'rgba(239, 68, 68, 0.1)' : 'rgba(0,0,0,0.4)', border: `1px solid ${wishlist.includes(item.id) ? 'rgba(239, 68, 68, 0.2)' : 'rgba(255,255,255,0.1)'}` }}
+                  style={{ background: 'rgba(0,0,0,0.4)', border: '1px solid rgba(255,255,255,0.1)' }}
                 >
-                  <span className={`text-xs ${wishlist.includes(item.id) ? 'animate-heartbeat' : ''}`}>
-                    {wishlist.includes(item.id) ? '❤️' : '🤍'}
-                  </span>
+                  <span className="text-xs">🤍</span>
                 </button>
               </div>
 
@@ -213,7 +181,7 @@ export default function FindAPairSection({ onPostItem, addToast, onSelectItem, o
                   <span className="text-lg font-bold text-white">${item.price}</span>
                   <span className="text-[12px] text-zinc-600 line-through">${item.originalPrice}</span>
                   <span className="text-[11px] text-emerald-400 ml-auto font-medium">
-                    Save {Math.round((1 - item.price / item.originalPrice) * 100)}%
+                    Save {Math.round((1 - (item.price || 0) / (item.originalPrice || 1)) * 100)}%
                   </span>
                 </div>
 
