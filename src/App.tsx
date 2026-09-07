@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect } from 'react'
 import Navbar from './components/Navbar'
 import Hero from './components/Hero'
 import StatsBar from './components/StatsBar'
@@ -25,8 +25,12 @@ import CommandPalette from './components/CommandPalette'
 import AdvancedFilters from './components/AdvancedFilters'
 import ReferralSystem from './components/ReferralSystem'
 import PriceHistoryChart from './components/PriceHistoryChart'
+import AnalyticsDashboard from './components/AnalyticsDashboard'
+import GamificationDashboard from './components/GamificationDashboard'
+import LiveNotifications from './components/LiveNotifications'
 import { initializeDatabase, itemsApi, userApi } from './lib/api'
 import { db } from './lib/db'
+import { gamificationService } from './lib/gamification'
 import type { Item } from './lib/db'
 
 function App() {
@@ -46,6 +50,9 @@ function App() {
   useEffect(() => {
     initializeDatabase()
     loadItems()
+    
+    // Award daily login points
+    gamificationService.awardPoints('daily_login')
   }, [])
 
   // Load items from database
@@ -102,6 +109,21 @@ function App() {
       if (response.success) {
         setShowConfetti(true)
         setTimeout(() => setShowConfetti(false), 4000)
+        
+        // Award points for posting
+        gamificationService.awardPoints('post_item')
+        
+        // Check for new achievements
+        const unlocked = gamificationService.checkAchievements()
+        if (unlocked.length > 0) {
+          addToast({
+            type: 'success',
+            title: 'Achievement Unlocked!',
+            message: unlocked.map(a => a.title).join(', '),
+            emoji: '🏆',
+          })
+        }
+        
         addToast({
           type: 'success',
           title: 'Item posted successfully!',
@@ -120,7 +142,7 @@ function App() {
     }
   }
 
-  const handleNavigate = useCallback((section: string) => {
+  const handleNavigate = (section: string) => {
     if (section === 'findapair' || section === 'freeitem') {
       setActiveSection(section)
       window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -130,7 +152,7 @@ function App() {
         element.scrollIntoView({ behavior: 'smooth' })
       }
     }
-  }, [])
+  }
 
   const handleSelectItem = async (item: Item) => {
     try {
@@ -178,7 +200,7 @@ function App() {
         setShowCommandPalette(true)
       } else if (e.key === '?') {
         e.preventDefault()
-        alert('Keyboard shortcuts:\n\n/ or ⌘K - Open command palette\n? - Show this help\nEsc - Close modals\n1 - Go to Find a Pair\n2 - Go to FreeItem Network\nP - Post item\nD - Open dashboard')
+        alert('Keyboard shortcuts:\n\n/ or ⌘K - Open command palette\n? - Show this help\nEsc - Close modals\n1 - Go to Find a Pair\n2 - Go to FreeItem Network\nP - Post item\nD - Open dashboard\nA - Open analytics\nG - Open gamification')
       } else if (e.key === '1') {
         setActiveSection('findapair')
         window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -189,6 +211,12 @@ function App() {
         handlePostItem(activeSection === 'findapair' ? 'pair' : 'free')
       } else if (e.key === 'd' || e.key === 'D') {
         setShowDashboard(true)
+      } else if (e.key === 'a' || e.key === 'A') {
+        // Open analytics (you can add a state for this)
+        console.log('Open analytics')
+      } else if (e.key === 'g' || e.key === 'G') {
+        // Open gamification (you can add a state for this)
+        console.log('Open gamification')
       } else if (e.key === 'Escape') {
         setShowPostModal(false)
         setSelectedItem(null)
@@ -220,6 +248,13 @@ function App() {
       
       <StatsBar />
       
+      <div className="separator-gradient max-w-6xl mx-auto"></div>
+
+      {/* Live Notifications */}
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
+        <LiveNotifications />
+      </div>
+
       <div className="separator-gradient max-w-6xl mx-auto"></div>
       
       {loading ? (
@@ -258,6 +293,22 @@ function App() {
 
       <ActivityFeed />
       
+      <div className="separator-gradient max-w-6xl mx-auto"></div>
+
+      {/* Analytics Dashboard */}
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
+        <h2 className="heading-lg mb-6">Your Analytics</h2>
+        <AnalyticsDashboard />
+      </div>
+
+      <div className="separator-gradient max-w-6xl mx-auto"></div>
+
+      {/* Gamification Dashboard */}
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
+        <h2 className="heading-lg mb-6">Achievements & Levels</h2>
+        <GamificationDashboard />
+      </div>
+
       <div className="separator-gradient max-w-6xl mx-auto"></div>
 
       <EcoCalculator />
