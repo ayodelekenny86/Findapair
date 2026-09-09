@@ -1,0 +1,48 @@
+{
+  "name": "FindAPair - Find the Mate of What You Lost",
+  "short_name": "FindAPair",
+  "description": "Connect with people who have the other half of your lost items, or give away unwanted items for free.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#09090b",
+  "theme_color": "#06b6d4",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["shopping", "lifestyle", "social"],
+  "screenshots": [
+    {
+      "src": "/screenshot1.png",
+      "sizes": "1280x720",
+      "type": "image/png"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Post Item",
+      "short_name": "Post",
+      "description": "Post a new item",
+      "url": "/post",
+      "icons": [{ "src": "/post-icon.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Browse Items",
+      "short_name": "Browse",
+      "description": "Browse available items",
+      "url": "/browse",
+      "icons": [{ "src": "/browse-icon.png", "sizes": "96x96" }]
+    }
+  ]
+}
